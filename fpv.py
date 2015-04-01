@@ -85,18 +85,23 @@ re_sectionelem = re.compile(ur'^(?P<treepath>\.\S*)\s+(?P<address>0[xX][0-9a-fA-
 re_sectionelem_nameonly = re.compile(ur'^(?P<symbol>\.\S*)$')
 re_sectionelem_detailonly = re.compile(ur'^\s+(?P<address>0[xX][0-9a-fA-F]+)\s+(?P<size>0[xX][0-9a-fA-F]+)\s+(?P<filefolder>.*/)?(?P<archivefile>:|.+?(?:\.[^.]*))\((?P<objfile>.*)\)$')
 
-re_memregion = re.compile(ur'^(?P<region>\S*)\s+(?P<origin>0[xX][0-9a-fA-F]+)\s+(?P<size>0[xX][0-9a-fA-F]+)\s*(?P<attribs>\S*)$')
+re_memregion = re.compile(ur'^(?P<region>\S*)\s+(?P<origin>0[xX][0-9a-fA-F]+)\s+(?P<size>0[xX][0-9a-fA-F]+)\s*(?P<attribs>.*)$')
 
-re_linkermap = {}
-re_linkermap['LOAD'] = re.compile(ur'^LOAD\s+(?P<filefolder>.*/)?(?P<file>:|.+?(?:\.[^.]*))$')
-re_linkermap['DEFN_ADDR'] = re.compile(ur'^\s+(?P<origin>0[xX][0-9a-fA-F]+)\s+(?P<name>.*)\s=\s+(?P<defn>0[xX][0-9a-fA-F]+)$')
-re_linkermap['SECTION_HEADINGS'] = re.compile(ur'^(?P<name>[._]\S*)(?:\s+(?P<address>0[xX][0-9a-fA-F]+))?(?:\s+(?P<size>0[xX][0-9a-fA-F]+))?(?:\s+load address\s+(?P<loadaddress>0[xX][0-9a-fA-F]+))?$')
-re_linkermap['SYMBOL'] = re.compile(ur'^\s(?P<name>\S+)(?:\s+(?P<address>0[xX][0-9a-fA-F]+))(?:\s+(?P<size>0[xX][0-9a-fA-F]+))\s+(?P<filefolder>.*/)?(?P<file>:|.+?(?:\.[^.\)]*))?(?:\((?P<file2>\S*)\))?$')
-re_linkermap['FILL'] = re.compile(ur'^\s(?:\*fill\*)(?:\s+(?P<address>0[xX][0-9a-fA-F]+))(?:\s+(?P<size>0[xX][0-9a-fA-F]+))$')
-re_linkermap['SYMBOLONLY'] = re.compile(ur'^\s(?P<name>[._]\S+)$')
-re_linkermap['SYMBOLDETAIL'] = re.compile(ur'^\s+(?:\s+(?P<address>0[xX][0-9a-fA-F]+))(?:\s+(?P<size>0[xX][0-9a-fA-F]+))\s+(?P<filefolder>.*/)?(?P<file>:|.+?(?:\.[^.\)]*))?(?:\((?P<file2>\S*)\))?$')
-re_linkermap['SECTIONDETAIL'] = re.compile(ur'^\s+(?:\s+(?P<address>0[xX][0-9a-fA-F]+))(?:\s+(?P<size>0[xX][0-9a-fA-F]+))$')
-re_linkermap['SECTIONHEADINGONLY'] = re.compile(ur'^(?P<name>[._]\S+)$')
+re_linkermap = {'LOAD': re.compile(ur'^LOAD\s+(?P<filefolder>.*/)?(?P<file>:|.+?(?:\.[^.]*))$'),
+                'DEFN_ADDR': re.compile(
+                    ur'^\s+(?P<origin>0[xX][0-9a-fA-F]+)\s+(?P<name>.*)\s=\s+(?P<defn>0[xX][0-9a-fA-F]+)$'),
+                'SECTION_HEADINGS': re.compile(
+                    ur'^(?P<name>[._]\S*)(?:\s+(?P<address>0[xX][0-9a-fA-F]+))?(?:\s+(?P<size>0[xX][0-9a-fA-F]+))?(?:\s+load address\s+(?P<loadaddress>0[xX][0-9a-fA-F]+))?$'),
+                'SYMBOL': re.compile(
+                    ur'^\s(?P<name>\S+)(?:\s+(?P<address>0[xX][0-9a-fA-F]+))(?:\s+(?P<size>0[xX][0-9a-fA-F]+))\s+(?P<filefolder>.*/)?(?P<file>:|.+?(?:\.[^.\)]*))?(?:\((?P<file2>\S*)\))?$'),
+                'FILL': re.compile(
+                    ur'^\s(?:\*fill\*)(?:\s+(?P<address>0[xX][0-9a-fA-F]+))(?:\s+(?P<size>0[xX][0-9a-fA-F]+))$'),
+                'SYMBOLONLY': re.compile(ur'^\s(?P<name>[._]\S+)$'),
+                'SYMBOLDETAIL': re.compile(
+                    ur'^\s+(?:\s+(?P<address>0[xX][0-9a-fA-F]+))(?:\s+(?P<size>0[xX][0-9a-fA-F]+))\s+(?P<filefolder>.*/)?(?P<file>:|.+?(?:\.[^.\)]*))?(?:\((?P<file2>\S*)\))?$'),
+                'SECTIONDETAIL': re.compile(
+                    ur'^\s+(?:\s+(?P<address>0[xX][0-9a-fA-F]+))(?:\s+(?P<size>0[xX][0-9a-fA-F]+))$'),
+                'SECTIONHEADINGONLY': re.compile(ur'^(?P<name>[._]\S+)$')}
 
 
 def check_line_for_heading(l):
@@ -463,4 +468,4 @@ def process_map_file(fname):
     return memory_map
 
 if __name__ == '__main__':
-    process_map_file('avrcpp.map')
+    process_map_file('mspgcc.map')

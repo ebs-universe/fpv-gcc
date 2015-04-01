@@ -134,16 +134,13 @@ class GCCMemoryMap(SizeNTree):
 class MemoryRegion(object):
     def __init__(self, name, origin, size, attribs):
         self.name = name
-        self.origin = int(origin,16)
+        self.origin = int(origin, 16)
         self.size = int(size, 16)
         self.attribs = attribs
 
     def __repr__(self):
-        r = "\n\nMemory Region :"
-        r += "\n Name: " + self.name
-        r += "\n Origin: " + hex(self.origin)
-        r += "\n Size: " + str(self.size)
-        r += "\n Attributes: " + self.attribs
+        r = '{0:.<20}{1:>20}{2:>20}   {3:<20}'.format(self.name, format(self.origin, '#010x'),
+                                                      self.size or '', self.attribs)
         return r
 
     def __contains__(self, value):
