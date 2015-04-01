@@ -19,8 +19,7 @@ along with fpv-gcc.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 
-
-import warnings
+import logging
 from os.path import commonprefix
 
 
@@ -71,7 +70,7 @@ class NTreeNode(object):
         if len(self.children) == 0:
             try:
                 if self._is_leaf_property_set is True:
-                    warnings.warn("Adding children to node which has leaf specific information set : " + self.gident)
+                    logging.warn("Adding children to node which has leaf specific information set : " + self.gident)
                     print self
             except NotImplementedError:
                 pass

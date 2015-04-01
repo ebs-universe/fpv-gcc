@@ -103,7 +103,7 @@ re_linkermap = {'LOAD': re.compile(ur'^LOAD\s+(?P<filefolder>.*/)?(?P<file>:|.+?
                 'SECTIONDETAIL': re.compile(
                     ur'^\s+(?:\s+(?P<address>0[xX][0-9a-fA-F]+))(?:\s+(?P<size>0[xX][0-9a-fA-F]+))$'),
                 'SECTIONHEADINGONLY': re.compile(ur'^(?P<name>[._]\S+)$'),
-                'LINKALIASES': re.compile(ur'^\s\*\(((?:.\S+(?:\s|))+)\)$')}
+                'LINKALIASES': re.compile(ur'^\s\*\(((?:[^\s\*\(\)]+(?:\*|)\s)*(?:[^\s\*\(\)]+(?:\*|)))\)$')}
 
 
 def check_line_for_heading(l):
@@ -481,4 +481,4 @@ def process_map_file(fname):
     return memory_map
 
 if __name__ == '__main__':
-    process_map_file('avrcpp.map')
+    process_map_file('mspgcc.map')
