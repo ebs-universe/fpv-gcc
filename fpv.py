@@ -1,7 +1,21 @@
 """
-This file is part of fpv-gcc
-See the COPYING, README, and INSTALL files for more information
+Copyright (C) 2015 Quazar Technologies Pvt. Ltd.
+              2015 Chintalagiri Shashank
 
+This file is part of fpv-gcc.
+
+fpv-gcc is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+fpv-gcc is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with fpv-gcc.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from __future__ import with_statement
@@ -11,8 +25,6 @@ import logging
 from gccMemoryMap import GCCMemoryMap, MemoryRegion
 
 logging.basicConfig(level=logging.DEBUG)
-
-# Processor Globals (Create a better way to deal with this)
 
 
 def reinitialize_states():
