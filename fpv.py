@@ -173,13 +173,10 @@ class CommonSymbol(object):
         self.objfile = objfile
 
     def __repr__(self):
-        # Make this cleaner
-        r = "\n\nCommon Symbol :: \n"
-        r += self.symbol + "\n"
-        r += str(self.size) + " bytes\n"
-        r += self.filefolder + "\n"
-        r += self.archivefile + "\n"
-        r += self.objfile + "\n"
+        r = '{0:.<30}{1:<8}{2:<20}{3:<40}{4}'.format(self.symbol, self.size or '',
+                                                     self.objfile or '', self.archivefile or '',
+                                                     self.filefolder or '')
+
         return r
 
 

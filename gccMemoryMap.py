@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with fpv-gcc.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-
+import logging
 from ntreeSize import SizeNTree, SizeNTreeNode
 
 memory_regions = None
@@ -76,6 +76,8 @@ class GCCMemoryMapNode(SizeNTreeNode):
 
     @osize.setter
     def osize(self, value):
+        if len(self.children):
+            logging.warn("Setting leaf property at a node which has children : " + self.name)
         self._size = int(value, 16)
 
     def add_child(self, newchild=None, name=None,
@@ -105,12 +107,14 @@ class GCCMemoryMapNode(SizeNTreeNode):
 
     @property
     def region(self):
+        if self.parent is not None and self.parent.region == 'DISCARDED':
+            return 'DISCARDED'
         if self._address is None:
             return 'UNDEF'
-        tla = self.get_top_level_ancestor
-        if tla is not None and tla is not self:
-            if tla.region == 'DISCARDED':
-                return 'DISCARDED TLA'
+        # tla = self.get_top_level_ancestor
+        # if tla is not None and tla is not self:
+        #     if tla.region == 'DISCARDED':
+        #         return 'DISCARDED TLA'
         if self._address == 0:
             return "DISCARDED"
         for region in memory_regions:
