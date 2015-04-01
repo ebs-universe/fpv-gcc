@@ -23,6 +23,7 @@ import re
 import logging
 
 from gccMemoryMap import GCCMemoryMap, MemoryRegion
+from gccMemoryMap import aliases
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -101,7 +102,8 @@ re_linkermap = {'LOAD': re.compile(ur'^LOAD\s+(?P<filefolder>.*/)?(?P<file>:|.+?
                     ur'^\s+(?:\s+(?P<address>0[xX][0-9a-fA-F]+))(?:\s+(?P<size>0[xX][0-9a-fA-F]+))\s+(?P<filefolder>.*/)?(?P<file>:|.+?(?:\.[^.\)]*))?(?:\((?P<file2>\S*)\))?$'),
                 'SECTIONDETAIL': re.compile(
                     ur'^\s+(?:\s+(?P<address>0[xX][0-9a-fA-F]+))(?:\s+(?P<size>0[xX][0-9a-fA-F]+))$'),
-                'SECTIONHEADINGONLY': re.compile(ur'^(?P<name>[._]\S+)$')}
+                'SECTIONHEADINGONLY': re.compile(ur'^(?P<name>[._]\S+)$'),
+                'LINKALIASES': re.compile(ur'^\s\*\(((?:.\S+(?:\s|))+)\)$')}
 
 
 def check_line_for_heading(l):
@@ -238,11 +240,31 @@ def process_linkermap_defn_addr_line(l):
         linker_defined_addresses.append(LinkerDefnAddr(res[0][1], res[0][0], res[0][2]))
 
 
+def linkermap_name_process(name, checksection=True):
+    name = name.strip()
+    if name.startswith('_'):
+        name = '.' + name
+    if name.startswith('COMMON'):
+        name = '.' + name
+    if not name.startswith('.'):
+        print 'Skipping :' + name.rstrip()
+        return None
+    name = aliases.encode(name)
+    if checksection is False:
+        return name
+    if not name.startswith(linkermap_section.gident):
+        if name != linkermap_section.gident:
+            logging.warn("Possibly mismatched section : " + name + " ; " + linkermap_section.gident)
+            name = linkermap_section.gident + name
+    return name
+
+
 def process_linkermap_section_headings_line(l):
     match = re_linkermap['SECTION_HEADINGS'].match(l)
     name = match.group('name').strip()
-    if name.startswith('_'):
-        name = ('.' + name).strip()
+    name = linkermap_name_process(name, False)
+    if name is None:
+        return
     newnode = memory_map.get_node(name, create=True)
     if match.group('address') is not None:
         newnode.address = match.group('address').strip()
@@ -260,13 +282,13 @@ def process_linkermap_section_headings_line(l):
 
 def process_linkermap_section_heading_detail_line(l):
     match = re_linkermap['SECTIONDETAIL'].match(l)
+    global linkermap_section
     newnode = linkermap_section
     if match:
         if match.group('address') is not None:
             newnode.address = match.group('address').strip()
         if match.group('size') is not None:
             newnode.defsize = match.group('size').strip()
-    global linkermap_section
     global LINKERMAP_STATE
     LINKERMAP_STATE = 'IN_SECTION'
 
@@ -278,16 +300,9 @@ def process_linkermap_symbol_line(l):
         linkermap_symbol = None
     match = re_linkermap['SYMBOL'].match(l)
     name = match.group('name').strip()
-    if name.startswith('COMMON'):
-        name = '.' + name
-    if name.startswith('_'):
-        name = '.' + name
-    if not name.startswith('.'):
-        print 'Skipping :' + l.rstrip()
+    name = linkermap_name_process(name)
+    if name is None:
         return
-    if not name.startswith(linkermap_section.gident):
-        logging.warn("Possibly mismatched section : " + name + " ; " + linkermap_section.gident)
-        name = linkermap_section.gident + name
     arfile = None
     objfile = None
     arfolder = None
@@ -343,18 +358,9 @@ def process_linkermap_symbolonly_line(l):
         linkermap_symbol = None
     match = re_linkermap['SYMBOLONLY'].match(l)
     name = match.group('name').strip()
-    if name.startswith('COMMON'):
-        name = '.' + name
-    if name.startswith('_'):
-        name = '.' + name
-    if not name.startswith('.'):
-        print 'Skipping :' + l.rstrip()
+    name = linkermap_name_process(name)
+    if name is None:
         return
-    if not name.startswith(linkermap_section.gident):
-        if name != linkermap_section.gident:
-            logging.warn("Possibly mismatched section : " + name + " ; " + linkermap_section.gident)
-            name = linkermap_section.gident + name
-    # print "Waiting for : " + name
     linkermap_symbol = name
 
 
@@ -362,17 +368,9 @@ def process_linkermap_section_detail_line(l):
     global linkermap_symbol
     match = re_linkermap['SYMBOLDETAIL'].match(l)
     name = linkermap_symbol
-    if name.startswith('COMMON'):
-        name = '.' + name.strip()
-        print name
-    if name.startswith('_'):
-        name = '.' + name.strip()
-    if not name.startswith('.'):
-        print 'Skipping :' + l.rstrip()
+    name = linkermap_name_process(name)
+    if name is None:
         return
-    if not name.startswith(linkermap_section.gident):
-        logging.warn("Possibly mismatched section : " + name + " ; " + linkermap_section.gident)
-        name = linkermap_section.gident + name
     arfile = None
     objfile = None
     arfolder = None
@@ -408,6 +406,21 @@ def process_linkermap_section_detail_line(l):
     linkermap_symbol = None
 
 
+def process_linkaliases_line(l):
+    match = re_linkermap['LINKALIASES'].match(l)
+    alias_list = match.group(1).split(' ')
+    # print alias_list, linkermap_section.gident
+    for alias in alias_list:
+        if alias.endswith('*'):
+            alias = alias[:-1]
+        if alias.endswith('.'):
+            alias = alias[:-1]
+        if alias == linkermap_section.gident:
+            continue
+        # print alias, linkermap_section.gident
+        aliases.register_alias(linkermap_section.gident, alias)
+
+
 def process_linkermap_line(l):
     if LINKERMAP_STATE == 'GOT_SECTION_NAME':
         process_linkermap_section_heading_detail_line(l)
@@ -434,6 +447,9 @@ def process_linkermap_line(l):
             return
         if re_linkermap['FILL'].match(l):
             process_linkermap_fill_line(l)
+            return
+        if re_linkermap['LINKALIASES'].match(l):
+            process_linkaliases_line(l)
             return
         if re_linkermap['SYMBOL'].match(l):
             process_linkermap_symbol_line(l)
@@ -465,4 +481,4 @@ def process_map_file(fname):
     return memory_map
 
 if __name__ == '__main__':
-    process_map_file('mspgcc.map')
+    process_map_file('avrcpp.map')

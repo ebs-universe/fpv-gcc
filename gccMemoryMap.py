@@ -24,6 +24,28 @@ from ntreeSize import SizeNTree, SizeNTreeNode
 memory_regions = None
 
 
+class LinkAliases(object):
+    def __init__(self):
+        self._aliases = {}
+
+    def register_alias(self, target, alias):
+        if alias in self._aliases.keys():
+            if target != self._aliases[alias]:
+                logging.warn("Alias Collision : " + alias + ' :: ' + target + '; ' + self._aliases[alias])
+        else:
+            self._aliases[alias] = target
+
+    def encode(self, name):
+        for key in self._aliases.keys():
+            if name.startswith(key):
+                # if alias.startswith(linkermap_section.gident):
+                #     alias = alias[len(linkermap_section.gident):]
+                return self._aliases[key] + name
+        return name
+
+aliases = LinkAliases()
+
+
 class GCCMemoryMapNode(SizeNTreeNode):
     def __init__(self, parent=None, node_t=None,
                  name=None, address=None, size=None, fillsize=None,
