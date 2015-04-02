@@ -18,9 +18,8 @@ You should have received a copy of the GNU General Public License
 along with fpv-gcc.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-
+import logging
 from ntree import NTreeNode, NTree
-import warnings
 
 
 class SizeNTreeNode(NTreeNode):
@@ -38,7 +37,7 @@ class SizeNTreeNode(NTreeNode):
                 try:
                     rval += child.size
                 except TypeError:
-                    warnings.warn("Size information not available for : " + child.gident)
+                    logging.warn("Size information not available for : " + child.gident)
                     return "Err"
         return rval
 
