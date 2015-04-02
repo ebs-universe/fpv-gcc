@@ -99,8 +99,15 @@ class GCCMemoryMapNode(SizeNTreeNode):
     @osize.setter
     def osize(self, value):
         if len(self.children):
-            logging.warn("Setting leaf property at a node which has children : " + self.name)
-        self._size = int(value, 16)
+            logging.warn("Setting leaf property at a node which has children : " + self.gident)
+        newsize = int(value, 16)
+        if self._size is not None:
+            if newsize != self._size:
+                logging.warn("Overwriting leaf property at node : " +
+                             self.gident + ' :: ' + str(self._size) + '->' + str(newsize))
+            else:
+                logging.warn("Possibly missing leaf node with same name : " + self.gident)
+        self._size = newsize
 
     def add_child(self, newchild=None, name=None,
                   address=None, size=None, fillsize=0,
