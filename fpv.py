@@ -283,11 +283,13 @@ def process_linkermap_section_headings_line(l):
     name = linkermap_name_process(name, False)
     if name is None:
         return
-    newnode = linkermap_get_newnode(name, False)
+    newnode = linkermap_get_newnode(name, True)
     if match.group('address') is not None:
         newnode.address = match.group('address').strip()
     if match.group('size') is not None:
         newnode.defsize = match.group('size').strip()
+        if len(newnode.children) > 0:
+            newnode = newnode.push_to_leaf()
     global linkermap_section
     global LINKERMAP_STATE
     if match.group('address') is not None:
@@ -307,6 +309,8 @@ def process_linkermap_section_heading_detail_line(l):
             newnode.address = match.group('address').strip()
         if match.group('size') is not None:
             newnode.defsize = match.group('size').strip()
+            if len(newnode.children) > 0:
+                newnode.push_to_leaf()
     global LINKERMAP_STATE
     LINKERMAP_STATE = 'IN_SECTION'
 
@@ -423,10 +427,14 @@ def process_linkaliases_line(l):
             alias = alias[:-1]
         if alias.endswith('.'):
             alias = alias[:-1]
-        if alias == linkermap_section.gident:
+        if linkermap_section is not None and alias == linkermap_section.gident:
             continue
         # print alias, linkermap_section.gident
-        aliases.register_alias(linkermap_section.gident, alias)
+        if linkermap_section is not None:
+            aliases.register_alias(linkermap_section.gident, alias)
+        else:
+            logging.warn("Target for alias unknown : " + alias)
+
 
 
 def process_linkermap_line(l):

@@ -122,6 +122,9 @@ class GCCMemoryMapNode(SizeNTreeNode):
         return newchild
 
     def push_to_leaf(self):
+        if not self.objfile:
+            logging.warn("No objfile defined. Can't push to leaf : " + self.gident)
+            return
         for child in self.children:
             if child.name == self.objfile.replace('.', '_'):
                 return
@@ -167,9 +170,10 @@ class GCCMemoryMapNode(SizeNTreeNode):
         raise ValueError(self._address)
 
     def __repr__(self):
-        r = '{0:.<60}{1:<15}{2:>10}{3:>10}    {5:<15}{4}'.format(self.gident, self.address or '',
-                                                                 self.defsize or '', self.size or '',
-                                                                 self.objfile or '', self.region,)
+        r = '{0:.<60}{1:<15}{2:>10}{6:>10}{3:>10}    {5:<15}{4}'.format(self.gident, self.address or '',
+                                                                        self.defsize or '', self.size or '',
+                                                                        self.objfile or '', self.region,
+                                                                        self._size or '')
         return r
 
 
