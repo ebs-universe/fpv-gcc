@@ -141,6 +141,8 @@ class GCCMemoryMapNode(SizeNTreeNode):
 
     @property
     def leafsize(self):
+        # if 'DISCARDED' in self.region:
+        #     return 0
         if self.fillsize is not None:
             if self._size is not None:
                 return self._size + self.fillsize
@@ -181,6 +183,46 @@ class GCCMemoryMap(SizeNTree):
     def __init__(self):
         node_t = GCCMemoryMapNode
         super(GCCMemoryMap, self).__init__(node_t)
+
+    @property
+    def used_regions(self):
+        ur = ['UNDEF']
+        for node in self.root.all_nodes():
+            if node.region not in ur:
+                ur.append(node.region)
+        ur.remove('UNDEF')
+        return ur
+
+    @property
+    def used_objfiles(self):
+        of = []
+        for node in self.root.all_nodes():
+            if node.objfile not in of:
+                of.append(node.objfile)
+        return of
+
+    @property
+    def all_symbols(self):
+        asym = []
+        for node in self.root.all_nodes():
+            if node.name not in asym:
+                asym.append(node.name)
+        return asym
+
+    def get_objfile_fp(self, objfile):
+        r = []
+        for rgn in self.used_regions:
+            r.append(self.get_objfile_fp_rgn(objfile, rgn))
+        return r
+
+    def get_objfile_fp_rgn(self, objfile, region):
+        rv = 0
+        for node in self.root.all_nodes():
+            if node.objfile == objfile:
+                if node.region == region:
+                    if node.leafsize is not None:
+                        rv += node.leafsize
+        return rv
 
 
 class MemoryRegion(object):

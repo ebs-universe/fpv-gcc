@@ -21,6 +21,7 @@ along with fpv-gcc.  If not, see <http://www.gnu.org/licenses/>.
 from __future__ import with_statement
 import re
 import logging
+from prettytable import PrettyTable
 
 from gccMemoryMap import GCCMemoryMap, MemoryRegion
 from gccMemoryMap import aliases
@@ -495,6 +496,30 @@ def process_map_file(fname):
                 elif state == 'IN_LINKER_SCRIPT_AND_MEMMAP':
                     process_linkermap_line(line)
     return memory_map
+
+
+def print_objfile_fp(mm=None):
+    if mm is None:
+        global memory_map
+        mm = memory_map
+    assert isinstance(mm, GCCMemoryMap)
+    totals = [0] * len(mm.used_regions)
+    tbl = PrettyTable(['OBJFILE'] + mm.used_regions)
+    tbl.align['OBJFILE'] = 'l'
+    for region in mm.used_regions:
+        tbl.align[region] = 'r'
+    tbl.padding_width = 1
+    data = {}
+    for objfile in mm.used_objfiles:
+        data[objfile] = mm.get_objfile_fp(objfile)
+
+    for objfile in mm.used_objfiles:
+        nextrow = mm.get_objfile_fp(objfile)
+        tbl.add_row([objfile] + nextrow)
+        totals = [totals[idx] + nextrow[idx] for idx in range(len(nextrow))]
+    tbl.add_row(['TOTALS'] + totals)
+    print tbl
+
 
 if __name__ == '__main__':
     process_map_file('mspgcc.map')
