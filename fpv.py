@@ -386,7 +386,6 @@ def process_linkermap_section_detail_line(l):
     global linkermap_symbol
     match = re_linkermap['SYMBOLDETAIL'].match(l)
     name = linkermap_symbol
-    name = linkermap_name_process(name)
     if name is None:
         return
     arfile = None
@@ -435,7 +434,6 @@ def process_linkaliases_line(l):
             aliases.register_alias(linkermap_section.gident, alias)
         else:
             logging.warn("Target for alias unknown : " + alias)
-
 
 
 def process_linkermap_line(l):
@@ -503,8 +501,8 @@ def print_objfile_fp(mm=None):
         global memory_map
         mm = memory_map
     assert isinstance(mm, GCCMemoryMap)
-    totals = [0] * len(mm.used_regions)
-    tbl = PrettyTable(['OBJFILE'] + mm.used_regions)
+    totals = [0] * (len(mm.used_regions) + 1)
+    tbl = PrettyTable(['OBJFILE'] + mm.used_regions + ['TOTAL'])
     tbl.align['OBJFILE'] = 'l'
     for region in mm.used_regions:
         tbl.align[region] = 'r'
@@ -515,11 +513,68 @@ def print_objfile_fp(mm=None):
 
     for objfile in mm.used_objfiles:
         nextrow = mm.get_objfile_fp(objfile)
-        tbl.add_row([objfile] + nextrow)
+        total = sum(nextrow)
+        tbl.add_row([objfile] + nextrow + [total])
         totals = [totals[idx] + nextrow[idx] for idx in range(len(nextrow))]
-    tbl.add_row(['TOTALS'] + totals)
-    print tbl
+    tbl.add_row(['TOTALS'] + totals + [''])
+    print tbl.get_string(sortby='TOTAL', reversesort=True)
+
+
+def print_arfile_fp(mm=None):
+    if mm is None:
+        global memory_map
+        mm = memory_map
+    assert isinstance(mm, GCCMemoryMap)
+    totals = [0] * (len(mm.used_regions) + 1)
+    tbl = PrettyTable(['OBJFILE'] + mm.used_regions + ['TOTAL'])
+    tbl.align['OBJFILE'] = 'l'
+    for region in mm.used_regions:
+        tbl.align[region] = 'r'
+    tbl.padding_width = 1
+    data = {}
+    for arfile in mm.used_arfiles:
+        data[arfile] = mm.get_arfile_fp(arfile)
+
+    for arfile in mm.used_arfiles:
+        nextrow = mm.get_arfile_fp(arfile)
+        total = sum(nextrow)
+        tbl.add_row([arfile] + nextrow + [total])
+        totals = [totals[idx] + nextrow[idx] for idx in range(len(nextrow))]
+    tbl.add_row(['TOTALS'] + totals + [''])
+    print tbl.get_string(sortby='TOTAL', reversesort=True)
+
+
+def print_file_fp(mm=None):
+    if mm is None:
+        global memory_map
+        mm = memory_map
+    assert isinstance(mm, GCCMemoryMap)
+    totals = [0] * (len(mm.used_regions) + 1)
+    tbl = PrettyTable(['FILE'] + mm.used_regions + ['TOTAL'])
+    tbl.align['FILE'] = 'l'
+    for region in mm.used_regions:
+        tbl.align[region] = 'r'
+    tbl.padding_width = 1
+
+    objfiles, arfiles = mm.used_files
+
+    for objfile in objfiles:
+        nextrow = mm.get_objfile_fp(objfile)
+        total = sum(nextrow)
+        tbl.add_row([objfile] + nextrow + [total])
+        totals = [totals[idx] + nextrow[idx] for idx in range(len(nextrow))]
+
+    for arfile in arfiles:
+        nextrow = mm.get_arfile_fp(arfile)
+        total = sum(nextrow)
+        tbl.add_row([arfile] + nextrow + [total])
+        totals = [totals[idx] + nextrow[idx] for idx in range(len(nextrow))]
+
+    tbl.add_row(['TOTALS'] + totals + [''])
+
+    print tbl.get_string(sortby='TOTAL', reversesort=True)
 
 
 if __name__ == '__main__':
-    process_map_file('mspgcc.map')
+    mm = process_map_file('examplemaps/mspgcc.map')
+    print_file_fp(mm)

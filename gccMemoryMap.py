@@ -39,9 +39,10 @@ class LinkAliases(object):
         for key in self._aliases.keys():
             if name.startswith(key):
                 # if alias.startswith(linkermap_section.gident):
-                #     alias = alias[len(linkermap_section.gident):]
+                # alias = alias[len(linkermap_section.gident):]
                 return self._aliases[key] + name
         return name
+
 
 aliases = LinkAliases()
 
@@ -128,21 +129,26 @@ class GCCMemoryMapNode(SizeNTreeNode):
         for child in self.children:
             if child.name == self.objfile.replace('.', '_'):
                 return
-        newleaf = self.add_child(name=self.objfile.replace('.', '_'),
-                                 address=self.address,
-                                 fillsize=self.fillsize, arfile=self.arfile,
-                                 objfile=self.objfile, arfolder=self.arfolder)
+        newleaf = self.add_child(name=self.objfile.replace('.', '_'))
         if self._defsize is not None:
             newleaf.defsize = hex(self._defsize)
         if self._address is not None:
             newleaf.address = hex(self._address)
+        if self.fillsize is not None:
+            newleaf.fillsize = self.fillsize
+        if self.objfile is not None:
+            newleaf.objfile = self.objfile
+        if self.arfile is not None:
+            newleaf.arfile = self.arfile
+        if self.arfolder is not None:
+            newleaf.arfolder = self.arfolder
         newleaf.osize = hex(self._size)
         return newleaf
 
     @property
     def leafsize(self):
         # if 'DISCARDED' in self.region:
-        #     return 0
+        # return 0
         if self.fillsize is not None:
             if self._size is not None:
                 return self._size + self.fillsize
@@ -162,8 +168,8 @@ class GCCMemoryMapNode(SizeNTreeNode):
             return 'UNDEF'
         # tla = self.get_top_level_ancestor
         # if tla is not None and tla is not self:
-        #     if tla.region == 'DISCARDED':
-        #         return 'DISCARDED TLA'
+        # if tla.region == 'DISCARDED':
+        # return 'DISCARDED TLA'
         if self._address == 0:
             return "DISCARDED"
         for region in memory_regions:
@@ -197,9 +203,50 @@ class GCCMemoryMap(SizeNTree):
     def used_objfiles(self):
         of = []
         for node in self.root.all_nodes():
+            if node.objfile is None and node.leafsize is not None \
+                    and node.region not in ['DISCARDED', 'UNDEF']:
+                logging.warn("Object unaccounted for : {0:<40} {1:<15} {2:>5}".format(node.gident, node.region,
+                                                                                      str(node.leafsize)))
+                continue
             if node.objfile not in of:
                 of.append(node.objfile)
         return of
+
+    @property
+    def used_arfiles(self):
+        af = []
+        for node in self.root.all_nodes():
+            if node.arfile is None and node.leafsize is not None \
+                    and node.region not in ['DISCARDED', 'UNDEF']:
+                logging.warn("Object unaccounted for : {0:<40} {1:<15} {2:>5}".format(node.gident, node.region,
+                                                                                      str(node.leafsize)))
+                continue
+            if node.arfile not in af:
+                af.append(node.arfile)
+        return af
+
+    @property
+    def used_files(self):
+        af = []
+        of = []
+        for node in self.root.all_nodes():
+            if node.arfile is None and node.leafsize is not None \
+                    and node.region not in ['DISCARDED', 'UNDEF']:
+                if node.objfile is None and node.leafsize is not None \
+                        and node.region not in ['DISCARDED', 'UNDEF']:
+                    logging.warn("Object unaccounted for : {0:<40} {1:<15} {2:>5}".format(node.gident, node.region,
+                                                                                          str(node.leafsize)))
+                    continue
+                else:
+                    if node.objfile not in of:
+                        of.append(node.objfile)
+            if node.arfile not in af:
+                af.append(node.arfile)
+        if None in af:
+            af.remove(None)
+        if None in of:
+            of.remove(None)
+        return of, af
 
     @property
     def all_symbols(self):
@@ -219,6 +266,21 @@ class GCCMemoryMap(SizeNTree):
         rv = 0
         for node in self.root.all_nodes():
             if node.objfile == objfile:
+                if node.region == region:
+                    if node.leafsize is not None:
+                        rv += node.leafsize
+        return rv
+
+    def get_arfile_fp(self, arfile):
+        r = []
+        for rgn in self.used_regions:
+            r.append(self.get_arfile_fp_rgn(arfile, rgn))
+        return r
+
+    def get_arfile_fp_rgn(self, arfile, region):
+        rv = 0
+        for node in self.root.all_nodes():
+            if node.arfile == arfile:
                 if node.region == region:
                     if node.leafsize is not None:
                         rv += node.leafsize
