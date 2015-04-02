@@ -197,6 +197,7 @@ class GCCMemoryMap(SizeNTree):
             if node.region not in ur:
                 ur.append(node.region)
         ur.remove('UNDEF')
+        ur.remove('DISCARDED')
         return ur
 
     @property
