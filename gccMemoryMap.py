@@ -121,6 +121,21 @@ class GCCMemoryMapNode(SizeNTreeNode):
             newchild = super(GCCMemoryMapNode, self).add_child(newchild)
         return newchild
 
+    def push_to_leaf(self):
+        for child in self.children:
+            if child.name == self.objfile.replace('.', '_'):
+                return
+        newleaf = self.add_child(name=self.objfile.replace('.', '_'),
+                                 address=self.address,
+                                 fillsize=self.fillsize, arfile=self.arfile,
+                                 objfile=self.objfile, arfolder=self.arfolder)
+        if self._defsize is not None:
+            newleaf.defsize = hex(self._defsize)
+        if self._address is not None:
+            newleaf.address = hex(self._address)
+        newleaf.osize = hex(self._size)
+        return newleaf
+
     @property
     def leafsize(self):
         if self.fillsize is not None:

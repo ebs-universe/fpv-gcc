@@ -259,13 +259,31 @@ def linkermap_name_process(name, checksection=True):
     return name
 
 
+def linkermap_get_newnode(name, allow_disambig=True, objfile=None, at_fill=True):
+    # if allow_disambig:
+    #     if len(name.split('.')) == 2 or name.startswith('.bss.COMMON') or name.startswith('.MSP430.attributes'):
+    #         disambig = objfile.replace('.', '_')
+    #         try:
+    #             name = name + '.' + disambig
+    #         except TypeError:
+    #             print name, objfile
+    #             raise TypeError
+    newnode = memory_map.get_node(name, create=True)
+    if at_fill is True:
+        if newnode._is_leaf_property_set:
+            newnode.push_to_leaf()
+            newnode = linkermap_get_newnode(name + '.' + objfile.replace('.', '_'),
+                                            allow_disambig=False, objfile=objfile, at_fill=True)
+    return newnode
+
+
 def process_linkermap_section_headings_line(l):
     match = re_linkermap['SECTION_HEADINGS'].match(l)
     name = match.group('name').strip()
     name = linkermap_name_process(name, False)
     if name is None:
         return
-    newnode = memory_map.get_node(name, create=True)
+    newnode = linkermap_get_newnode(name, False)
     if match.group('address') is not None:
         newnode.address = match.group('address').strip()
     if match.group('size') is not None:
@@ -315,14 +333,7 @@ def process_linkermap_symbol_line(l):
         objfile = match.group('file').strip()
         if match.group('filefolder') is not None:
             arfolder = match.group('filefolder').strip()
-    if len(name.split('.')) == 2 or name.startswith('.bss.COMMON') or name.startswith('.MSP430.attributes'):
-        disambig = objfile.replace('.', '_')
-        try:
-            name = name + '.' + disambig
-        except TypeError:
-            print name, objfile
-            raise TypeError
-    newnode = memory_map.get_node(name, create=True)
+    newnode = linkermap_get_newnode(name, allow_disambig=True, objfile=objfile)
     if arfile is not None:
         newnode.arfile = arfile
     if objfile is not None:
@@ -333,6 +344,8 @@ def process_linkermap_symbol_line(l):
         newnode.address = match.group('address').strip()
     if match.group('size') is not None:
         newnode.osize = match.group('size').strip()
+        if len(newnode.children) > 0:
+            newnode = newnode.push_to_leaf()
     global linkermap_lastsymbol
     linkermap_lastsymbol = newnode
 
@@ -383,14 +396,7 @@ def process_linkermap_section_detail_line(l):
         objfile = match.group('file').strip()
         if match.group('filefolder') is not None:
             arfolder = match.group('filefolder').strip()
-    if len(name.split('.')) == 2 or name.startswith('.bss.COMMON') or name.startswith('.MSP430.attributes'):
-        disambig = objfile.replace('.', '_')
-        try:
-            name = name + '.' + disambig
-        except TypeError:
-            print name, objfile
-            raise TypeError
-    newnode = memory_map.get_node(name, create=True)
+    newnode = linkermap_get_newnode(name, allow_disambig=True, objfile=objfile)
     if arfile is not None:
         newnode.arfile = arfile
     if objfile is not None:
@@ -401,6 +407,8 @@ def process_linkermap_section_detail_line(l):
         newnode.address = match.group('address').strip()
     if match.group('size') is not None:
         newnode.osize = match.group('size').strip()
+        if len(newnode.children) > 0:
+            newnode = newnode.push_to_leaf()
     global linkermap_lastsymbol
     linkermap_lastsymbol = newnode
     linkermap_symbol = None

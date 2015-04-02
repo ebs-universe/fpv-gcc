@@ -71,7 +71,6 @@ class NTreeNode(object):
             try:
                 if self._is_leaf_property_set is True:
                     logging.warn("Adding children to node which has leaf specific information set : " + self.gident)
-                    print self
             except NotImplementedError:
                 pass
         newchild.parent = self
