@@ -149,6 +149,8 @@ class GCCMemoryMapNode(SizeNTreeNode):
     def leafsize(self):
         # if 'DISCARDED' in self.region:
         # return 0
+        # if len(self.children) > 0:
+        #     raise AttributeError
         if self.fillsize is not None:
             if self._size is not None:
                 return self._size + self.fillsize
@@ -250,6 +252,12 @@ class GCCMemoryMap(SizeNTree):
         return of, af
 
     @property
+    def used_sections(self):
+        sections = [node.gident for node in self.top_level_nodes if node.size > 0 and node.region not in ['DISCARDED', 'UNDEF']]
+        sections += [node.gident for node in sum([n.children for n in self.top_level_nodes if n.region == 'UNDEF'], []) if node.region != 'DISCARDED' and node.size > 0]
+        return sections
+
+    @property
     def all_symbols(self):
         asym = []
         for node in self.root.all_nodes():
@@ -270,6 +278,34 @@ class GCCMemoryMap(SizeNTree):
                 if node.region == region:
                     if node.leafsize is not None:
                         rv += node.leafsize
+        return rv
+
+    def get_objfile_fp_secs(self, objfile):
+        r = []
+        for section in self.used_sections:
+            r.append(self.get_objfile_fp_sec(objfile, section))
+        return r
+
+    def get_arfile_fp_secs(self, arfile):
+        r = []
+        for section in self.used_sections:
+            r.append(self.get_arfile_fp_sec(arfile, section))
+        return r
+
+    def get_objfile_fp_sec(self, objfile, section):
+        rv = 0
+        for node in self.get_node(section).all_nodes():
+            if node.objfile == objfile:
+                if node.leafsize is not None:
+                    rv += node.leafsize
+        return rv
+
+    def get_arfile_fp_sec(self, arfile, section):
+        rv = 0
+        for node in self.get_node(section).all_nodes():
+            if node.arfile == arfile:
+                if node.leafsize is not None:
+                    rv += node.leafsize
         return rv
 
     def get_arfile_fp(self, arfile):

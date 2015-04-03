@@ -475,6 +475,14 @@ def process_linkermap_line(l):
     return None
 
 
+def cleanup_map(mm):
+    for node in mm.root.all_nodes():
+        if len(node.children) > 0:
+            logging.warn('Force clearing leaf size for intermediate node : ' + node.gident)
+            node.osize = '0x0'
+            node.fillsize = 0
+
+
 def process_map_file(fname):
     reinitialize_states()
     with open(fname) as f:
@@ -493,6 +501,7 @@ def process_map_file(fname):
                     process_memory_configuration_line(line)
                 elif state == 'IN_LINKER_SCRIPT_AND_MEMMAP':
                     process_linkermap_line(line)
+    cleanup_map(memory_map)
     return memory_map
 
 
@@ -566,6 +575,37 @@ def print_file_fp(mm=None):
 
     for arfile in arfiles:
         nextrow = mm.get_arfile_fp(arfile)
+        total = sum(nextrow)
+        tbl.add_row([arfile] + nextrow + [total])
+        totals = [totals[idx] + nextrow[idx] for idx in range(len(nextrow))]
+
+    tbl.add_row(['TOTALS'] + totals + [''])
+
+    print tbl.get_string(sortby='TOTAL', reversesort=True)
+
+
+def print_sectioned_fp(mm):
+    assert isinstance(mm, GCCMemoryMap)
+    totals = [0] * (len(mm.used_sections) + 1)
+    tbl = PrettyTable(['FILE'] + mm.used_sections + ['TOTAL'])
+
+    tbl.align['FILE'] = 'l'
+    for section in mm.used_sections:
+        tbl.align[section] = 'r'
+    tbl.padding_width = 1
+
+    arfiles = []
+    objfiles = mm.used_objfiles
+    # objfiles, arfiles = mm.used_files
+
+    for objfile in objfiles:
+        nextrow = mm.get_objfile_fp_secs(objfile)
+        total = sum(nextrow)
+        tbl.add_row([objfile] + nextrow + [total])
+        totals = [totals[idx] + nextrow[idx] for idx in range(len(nextrow))]
+
+    for arfile in arfiles:
+        nextrow = mm.get_arfile_fp_secs(arfile)
         total = sum(nextrow)
         tbl.add_row([arfile] + nextrow + [total])
         totals = [totals[idx] + nextrow[idx] for idx in range(len(nextrow))]
