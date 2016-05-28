@@ -253,8 +253,11 @@ class GCCMemoryMap(SizeNTree):
 
     @property
     def used_sections(self):
-        sections = [node.gident for node in self.top_level_nodes if node.size > 0 and node.region not in ['DISCARDED', 'UNDEF']]
-        sections += [node.gident for node in sum([n.children for n in self.top_level_nodes if n.region == 'UNDEF'], []) if node.region != 'DISCARDED' and node.size > 0]
+        sections = [node.gident for node in self.top_level_nodes
+                    if node.size > 0 and node.region not in ['DISCARDED', 'UNDEF']]
+        sections += [node.gident for node in
+                     sum([n.children for n in self.top_level_nodes if n.region == 'UNDEF'], [])
+                     if node.region != 'DISCARDED' and node.size > 0]
         return sections
 
     @property

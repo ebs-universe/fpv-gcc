@@ -70,7 +70,7 @@ def reinitialize_states():
 
 
 # Regular Expressions
-re_headings = {'IN_DEPENDENCIES': re.compile("Archive member included because of file \(symbol\)"),
+re_headings = {'IN_DEPENDENCIES': re.compile("Archive member included to satisfy reference by file \(symbol\)"),
                'IN_COMMON_SYMBOLS': re.compile("Allocating common symbols"),
                'IN_DISCARDED_INPUT_SECTIONS': re.compile("Discarded input sections"),
                'IN_MEMORY_CONFIGURATION': re.compile("Memory Configuration"),
@@ -616,5 +616,5 @@ def print_sectioned_fp(mm):
 
 
 if __name__ == '__main__':
-    mm = process_map_file('examplemaps/mspgcc.map')
+    mm = process_map_file('examplemaps/app.map')
     print_file_fp(mm)
