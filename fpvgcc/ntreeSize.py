@@ -51,10 +51,10 @@ class SizeNTreeNode(NTreeNode):
 
 
 class SizeNTree(NTree):
-    def __init__(self, node_t=None):
-        if node_t is None:
-            node_t = SizeNTreeNode
-        super(SizeNTree, self).__init__(node_t)
+    node_t = SizeNTreeNode
+
+    def __init__(self):
+        super(SizeNTree, self).__init__()
 
     @property
     def size(self):

@@ -36,8 +36,15 @@ class NTreeNode(object):
         self._ident_property = None
 
     @property
+    def tree(self):
+        if isinstance(self.parent, NTree):
+            return self.parent
+        else:
+            return self.parent.tree
+
+    @property
     def is_root(self):
-        if self.parent is None:
+        if isinstance(self.parent, NTree):
             return True
         else:
             return False
@@ -46,7 +53,7 @@ class NTreeNode(object):
     def is_toplevelnode(self):
         if self.is_root:
             return False
-        if self.parent.parent is None:
+        if isinstance(self.parent.parent, NTree):
             return True
         return False
 
@@ -63,13 +70,17 @@ class NTreeNode(object):
         try:
             for child in self.children:
                 if child.ident == newchild.ident:
-                    raise ValueError("Child with that identifier already exists: " + newchild.ident)
+                    raise ValueError("Child with that identifier already "
+                                     "exists: {0}".format(newchild.ident))
         except NotImplementedError:
             pass
         if len(self.children) == 0:
             try:
                 if self._is_leaf_property_set is True:
-                    logging.warn("Adding children to node which has leaf specific information set : " + self.gident)
+                    logging.warn(
+                        "Adding children to node which has leaf specific "
+                        "information set : {0}".format(self.gident)
+                    )
             except NotImplementedError:
                 pass
         newchild.parent = self
@@ -113,7 +124,7 @@ class NTreeNode(object):
     def gident(self):
         rval = self.ident
         walker = self
-        while walker.parent is not None:
+        while not isinstance(walker.parent, NTree):
             walker = walker.parent
             rval = walker.ident + '.' + rval
         return rval
@@ -152,11 +163,10 @@ class NTreeNode(object):
 
 
 class NTree(object):
-    def __init__(self, node_t=None):
-        if node_t is None:
-            node_t = NTreeNode
-        self.node_t = node_t
-        self.root = node_t(node_t=node_t)
+    node_t = NTreeNode
+
+    def __init__(self):
+        self.root = self.node_t(parent=self, node_t=self.node_t)
 
     @property
     def top_level_nodes(self):

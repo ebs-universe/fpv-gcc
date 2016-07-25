@@ -21,8 +21,6 @@
 import logging
 from ntreeSize import SizeNTree, SizeNTreeNode
 
-memory_regions = None
-
 
 class LinkAliases(object):
     def __init__(self):
@@ -31,7 +29,8 @@ class LinkAliases(object):
     def register_alias(self, target, alias):
         if alias in self._aliases.keys():
             if target != self._aliases[alias]:
-                logging.warn("Alias Collision : " + alias + ' :: ' + target + '; ' + self._aliases[alias])
+                logging.warn("Alias Collision : {0} :: {1} ; {2}"
+                             "".format(alias, target, self._aliases[alias]))
         else:
             self._aliases[alias] = target
 
@@ -43,8 +42,10 @@ class LinkAliases(object):
                 return self._aliases[key] + name
         return name
 
-
-aliases = LinkAliases()
+    def __repr__(self):
+        return '\n'.join(["{0:>38} -> {1:<38}".format(a, t)
+                          for (a, t) in sorted(self._aliases.items(),
+                                               key=lambda x: x[1])])
 
 
 class GCCMemoryMapNode(SizeNTreeNode):
@@ -72,6 +73,7 @@ class GCCMemoryMapNode(SizeNTreeNode):
         self.arfolder = arfolder
         self.arfile = arfile
         self.objfile = objfile
+        self._fillsize = None
         self.fillsize = fillsize
 
     @property
@@ -100,15 +102,30 @@ class GCCMemoryMapNode(SizeNTreeNode):
     @osize.setter
     def osize(self, value):
         if len(self.children):
-            logging.warn("Setting leaf property at a node which has children : " + self.gident)
+            logging.warn("Setting leaf property at a node which "
+                         "has children : {0}".format(self.gident))
         newsize = int(value, 16)
         if self._size is not None:
             if newsize != self._size:
-                logging.warn("Overwriting leaf property at node : " +
-                             self.gident + ' :: ' + str(self._size) + '->' + str(newsize))
+                logging.warn(
+                    "Overwriting leaf property at node : {0} :: {1} -> {2}"
+                    "".format(self.gident, self._size, newsize)
+                )
             else:
-                logging.warn("Possibly missing leaf node with same name : " + self.gident)
+                logging.warn("Possibly missing leaf node "
+                             "with same name : {0}".format(self.gident))
         self._size = newsize
+
+    @property
+    def fillsize(self):
+        return self._fillsize
+
+    @fillsize.setter
+    def fillsize(self, value):
+        if value:
+            self._fillsize = int(value, 16)
+        else:
+            self._fillsize = 0
 
     def add_child(self, newchild=None, name=None,
                   address=None, size=None, fillsize=0,
@@ -124,7 +141,8 @@ class GCCMemoryMapNode(SizeNTreeNode):
 
     def push_to_leaf(self):
         if not self.objfile:
-            logging.warn("No objfile defined. Can't push to leaf : " + self.gident)
+            logging.warn("No objfile defined. Can't push to leaf : "
+                         "{0}".format(self.gident))
             return
         for child in self.children:
             if child.name == self.objfile.replace('.', '_'):
@@ -164,7 +182,8 @@ class GCCMemoryMapNode(SizeNTreeNode):
 
     @property
     def region(self):
-        if self.parent is not None and self.parent.region == 'DISCARDED':
+        if not isinstance(self.parent, GCCMemoryMap) and \
+                self.parent.region == 'DISCARDED':
             return 'DISCARDED'
         if self._address is None:
             return 'UNDEF'
@@ -174,23 +193,30 @@ class GCCMemoryMapNode(SizeNTreeNode):
         # return 'DISCARDED TLA'
         if self._address == 0:
             return "DISCARDED"
-        for region in memory_regions:
+        for region in self.tree.memory_regions:
             if self._address in region:
                 return region.name
         raise ValueError(self._address)
 
+    @property
+    def is_leaf_property_set(self):
+        return self._is_leaf_property_set
+
     def __repr__(self):
-        r = '{0:.<60}{1:<15}{2:>10}{6:>10}{3:>10}    {5:<15}{4}'.format(self.gident, self.address or '',
-                                                                        self.defsize or '', self.size or '',
-                                                                        self.objfile or '', self.region,
-                                                                        self._size or '')
+        r = '{0:.<60}{1:<15}{2:>10}{6:>10}{3:>10}    {5:<15}{4}' \
+            ''.format(self.gident, self.address or '', self.defsize or '',
+                      self.size or '', self.objfile or '', self.region,
+                      self._size or '')
         return r
 
 
 class GCCMemoryMap(SizeNTree):
+    node_t = GCCMemoryMapNode
+
     def __init__(self):
-        node_t = GCCMemoryMapNode
-        super(GCCMemoryMap, self).__init__(node_t)
+        self.memory_regions = []
+        self.aliases = LinkAliases()
+        super(GCCMemoryMap, self).__init__()
 
     @property
     def used_regions(self):
@@ -206,10 +232,11 @@ class GCCMemoryMap(SizeNTree):
     def used_objfiles(self):
         of = []
         for node in self.root.all_nodes():
-            if node.objfile is None and node.leafsize is not None \
+            if node.objfile is None and node.leafsize \
                     and node.region not in ['DISCARDED', 'UNDEF']:
-                logging.warn("Object unaccounted for : {0:<40} {1:<15} {2:>5}".format(node.gident, node.region,
-                                                                                      str(node.leafsize)))
+                logging.warn("Object unaccounted for : {0:<40} {1:<15} {2:>5}"
+                             "".format(node.gident, node.region,
+                                       str(node.leafsize)))
                 continue
             if node.objfile not in of:
                 of.append(node.objfile)
@@ -219,10 +246,11 @@ class GCCMemoryMap(SizeNTree):
     def used_arfiles(self):
         af = []
         for node in self.root.all_nodes():
-            if node.arfile is None and node.leafsize is not None \
+            if node.arfile is None and node.leafsize \
                     and node.region not in ['DISCARDED', 'UNDEF']:
-                logging.warn("Object unaccounted for : {0:<40} {1:<15} {2:>5}".format(node.gident, node.region,
-                                                                                      str(node.leafsize)))
+                logging.warn("Object unaccounted for : {0:<40} {1:<15} {2:>5}"
+                             "".format(node.gident, node.region,
+                                       str(node.leafsize)))
                 continue
             if node.arfile not in af:
                 af.append(node.arfile)
@@ -233,12 +261,13 @@ class GCCMemoryMap(SizeNTree):
         af = []
         of = []
         for node in self.root.all_nodes():
-            if node.arfile is None and node.leafsize is not None \
+            if node.arfile is None and node.leafsize \
                     and node.region not in ['DISCARDED', 'UNDEF']:
-                if node.objfile is None and node.leafsize is not None \
+                if node.objfile is None and node.leafsize \
                         and node.region not in ['DISCARDED', 'UNDEF']:
-                    logging.warn("Object unaccounted for : {0:<40} {1:<15} {2:>5}".format(node.gident, node.region,
-                                                                                          str(node.leafsize)))
+                    logging.warn(
+                        "Object unaccounted for : {0:<40} {1:<15} {2:>5}"
+                        "".format(node.gident, node.region, str(node.leafsize)))
                     continue
                 else:
                     if node.objfile not in of:
@@ -254,9 +283,11 @@ class GCCMemoryMap(SizeNTree):
     @property
     def used_sections(self):
         sections = [node.gident for node in self.top_level_nodes
-                    if node.size > 0 and node.region not in ['DISCARDED', 'UNDEF']]
+                    if node.size > 0 and
+                    node.region not in ['DISCARDED', 'UNDEF']]
         sections += [node.gident for node in
-                     sum([n.children for n in self.top_level_nodes if n.region == 'UNDEF'], [])
+                     sum([n.children for n in self.top_level_nodes
+                          if n.region == 'UNDEF'], [])
                      if node.region != 'DISCARDED' and node.size > 0]
         return sections
 
@@ -335,8 +366,9 @@ class MemoryRegion(object):
         self.attribs = attribs
 
     def __repr__(self):
-        r = '{0:.<20}{1:>20}{2:>20}   {3:<20}'.format(self.name, format(self.origin, '#010x'),
-                                                      self.size or '', self.attribs)
+        r = '{0:.<20}{1:>20}{2:>20}   {3:<20}' \
+            ''.format(self.name, format(self.origin, '#010x'),
+                      self.size or '', self.attribs)
         return r
 
     def __contains__(self, value):
