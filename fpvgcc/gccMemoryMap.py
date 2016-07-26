@@ -242,6 +242,15 @@ class GCCMemoryMap(SizeNTree):
                 of.append(node.objfile)
         return of
 
+    def arfile_objfiles(self, arfile):
+        of = []
+        for node in self.root.all_nodes():
+            if node.leafsize and node.region not in ['DISCARDED', 'UNDEF']:
+                continue
+            if node.arfile == arfile and node.objfile not in of:
+                of.append(node.objfile)
+        return of
+
     @property
     def used_arfiles(self):
         af = []
@@ -298,6 +307,28 @@ class GCCMemoryMap(SizeNTree):
             if node.name not in asym:
                 asym.append(node.name)
         return asym
+
+    def symbols_from_file(self, lfile):
+        fsym = []
+        for node in self.root.all_nodes():
+            if node.name not in fsym and lfile in [node.objfile, node.arfile]:
+                fsym.append(node.name)
+        return fsym
+
+    def get_symbol_fp(self, symbol):
+        r = []
+        for rgn in self.used_regions:
+            r.append(self.get_symbol_fp_rgn(symbol, rgn))
+        return r
+
+    def get_symbol_fp_rgn(self, symbol, region):
+        rv = 0
+        for node in self.root.all_nodes():
+            if node.name == symbol:
+                if node.region == region:
+                    if node.leafsize is not None:
+                        rv += node.leafsize
+        return rv
 
     def get_objfile_fp(self, objfile):
         r = []

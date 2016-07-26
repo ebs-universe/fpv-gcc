@@ -526,14 +526,32 @@ def process_map_file(fname):
     return sm
 
 
-def print_symbol_fp(mm=None, symbol=None):
-    pass
+def print_symbol_fp(mm, lfile='all'):
+    assert isinstance(mm, GCCMemoryMap)
+    totals = [0] * (len(mm.used_regions) + 1)
+    tbl = PrettyTable(['SYMBOL'] + mm.used_regions + ['TOTAL'])
+    tbl.align['SYMBOL'] = 'l'
+    for region in mm.used_regions:
+        tbl.align[region] = 'r'
+    tbl.padding_width = 1
+    data = {}
+    if lfile == 'all':
+        symbols = mm.all_symbols
+    else:
+        symbols = mm.symbols_from_file(lfile)
+    for symbol in symbols:
+        data[symbol] = mm.get_symbol_fp(symbol)
+
+    for symbol in symbols:
+        nextrow = mm.get_symbol_fp(symbol)
+        total = sum(nextrow)
+        tbl.add_row([symbol] + nextrow + [total])
+        totals = [totals[idx] + nextrow[idx] for idx in range(len(nextrow))]
+    tbl.add_row(['TOTALS'] + totals + [''])
+    print(tbl.get_string(sortby='TOTAL', reversesort=True))
 
 
-def print_objfile_fp(mm=None, objfile=None):
-    if mm is None:
-        global memory_map
-        mm = memory_map
+def print_objfile_fp(mm, arfile='all'):
     assert isinstance(mm, GCCMemoryMap)
     totals = [0] * (len(mm.used_regions) + 1)
     tbl = PrettyTable(['OBJFILE'] + mm.used_regions + ['TOTAL'])
@@ -542,10 +560,15 @@ def print_objfile_fp(mm=None, objfile=None):
         tbl.align[region] = 'r'
     tbl.padding_width = 1
     data = {}
-    for objfile in mm.used_objfiles:
+    if arfile == 'all':
+        objfiles = mm.used_objfiles
+    else:
+        objfiles = mm.arfile_objfiles(arfile)
+
+    for objfile in objfiles:
         data[objfile] = mm.get_objfile_fp(objfile)
 
-    for objfile in mm.used_objfiles:
+    for objfile in objfiles:
         nextrow = mm.get_objfile_fp(objfile)
         total = sum(nextrow)
         tbl.add_row([objfile] + nextrow + [total])
@@ -554,10 +577,7 @@ def print_objfile_fp(mm=None, objfile=None):
     print(tbl.get_string(sortby='TOTAL', reversesort=True))
 
 
-def print_arfile_fp(mm=None, arfile=None):
-    if mm is None:
-        global memory_map
-        mm = memory_map
+def print_arfile_fp(mm):
     assert isinstance(mm, GCCMemoryMap)
     totals = [0] * (len(mm.used_regions) + 1)
     tbl = PrettyTable(['OBJFILE'] + mm.used_regions + ['TOTAL'])
@@ -578,10 +598,7 @@ def print_arfile_fp(mm=None, arfile=None):
     print(tbl.get_string(sortby='TOTAL', reversesort=True))
 
 
-def print_file_fp(mm=None, lfile=None):
-    if mm is None:
-        global memory_map
-        mm = memory_map
+def print_file_fp(mm):
     assert isinstance(mm, GCCMemoryMap)
     totals = [0] * (len(mm.used_regions) + 1)
     tbl = PrettyTable(['FILE'] + mm.used_regions + ['TOTAL'])
@@ -665,14 +682,18 @@ def main():
     action = parser.add_mutually_exclusive_group(required=True)
     action.add_argument('--sar', action='store_true',
                         help='Print summary of usage per included file.')
-    action.add_argument('--sobj', action='store_true',
+    action.add_argument('--sobj', metavar='ARFILE',
                         help='Print summary of usage per included object file.')
-    action.add_argument('--ssym', action='store_true',
+    action.add_argument('--ssym', metavar='FILE',
                         help='Print summary of usage per included symbol.')
     action.add_argument('--ssec', action='store_true',
                         help='Print sectioned summary of usage.')
-    action.add_argument('--lmap', default='root',
-                        help='Print detail of linker map nodes.')
+    action.add_argument('--lmap', metavar='ROOT',
+                        help='Print descendent nodes in the linker map.')
+    action.add_argument('--lobj', metavar='OBJFILE',
+                        help='Print nodes from a specified obj file.')
+    action.add_argument('--lar', metavar='ARFILE',
+                        help='Print nodes from a specified ar file.')
     action.add_argument('--uf', action='store_true',
                         help='Print list of all used files.')
     action.add_argument('--uarf', action='store_true',
@@ -697,12 +718,13 @@ def main():
     elif args.verbose == 3:
         logging.basicConfig(level=logging.DEBUG)
     state_machine = process_map_file(args.mapfile)
+    print(args)
     if args.sar:
         print_file_fp(state_machine.memory_map)
     elif args.sobj:
-        print_objfile_fp(state_machine.memory_map)
+        print_objfile_fp(state_machine.memory_map, arfile=args.sobj)
     elif args.ssym:
-        print_symbol_fp(state_machine.memory_map)
+        print_symbol_fp(state_machine.memory_map, lfile=args.ssym)
     elif args.ssec:
         print_sectioned_fp(state_machine.memory_map)
     elif args.uf:
@@ -727,6 +749,14 @@ def main():
         else:
             n = state_machine.memory_map.get_node(args.lmap)
             for node in n.all_nodes():
+                print(node)
+    elif args.lar:
+        for node in state_machine.memory_map.root.all_nodes():
+            if node.arfile == args.lar:
+                print(node)
+    elif args.lobj:
+        for node in state_machine.memory_map.root.all_nodes():
+            if node.objfile == args.lobj:
                 print(node)
 
 
