@@ -14,7 +14,7 @@ def read(fname):
 
 setup(
     name="fpv-gcc",
-    version="0.3",
+    version="0.4",
     author="Chintalagiri Shashank",
     author_email="shashank@chintal.in",
     description="Analysing code footprint on embedded microcontrollers "
@@ -32,6 +32,10 @@ setup(
         "Natural Language :: English",
         "Operating System :: OS Independent",
         "Environment :: Console"
+    ],
+    install_requires=[
+        'six',
+        'prettytable'
     ],
     platforms='any',
     entry_points={

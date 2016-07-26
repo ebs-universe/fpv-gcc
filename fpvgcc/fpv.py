@@ -718,7 +718,7 @@ def main():
     elif args.verbose == 3:
         logging.basicConfig(level=logging.DEBUG)
     state_machine = process_map_file(args.mapfile)
-    print(args)
+
     if args.sar:
         print_file_fp(state_machine.memory_map)
     elif args.sobj:
