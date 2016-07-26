@@ -708,6 +708,8 @@ def main():
                         help='Print list of loaded files.')
     action.add_argument('--la', action='store_true',
                         help='Print list of detected aliases.')
+    action.add_argument('--addr', metavar='ADDRESS',
+                        help='Describe contents at address.')
     args = parser.parse_args()
     if args.verbose == 0:
         logging.basicConfig(level=logging.ERROR)
@@ -757,6 +759,10 @@ def main():
     elif args.lobj:
         for node in state_machine.memory_map.root.all_nodes():
             if node.objfile == args.lobj:
+                print(node)
+    elif args.addr:
+        for node in state_machine.memory_map.root.all_nodes():
+            if node.contains_address(args.addr):
                 print(node)
 
 

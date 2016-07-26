@@ -87,6 +87,14 @@ class GCCMemoryMapNode(SizeNTreeNode):
     def address(self, value):
         self._address = int(value, 16)
 
+    def contains_address(self, addr):
+        if not self.address or self.region in ['DISCARDED', 'UNDEF']:
+            return False
+        if int(self.address, 0) <= int(addr, 0) < \
+                (int(self.address, 0) + self.size):
+            return True
+        return False
+
     @property
     def defsize(self):
         return self._defsize
