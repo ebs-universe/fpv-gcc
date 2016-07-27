@@ -14,7 +14,7 @@ def read(fname):
 
 setup(
     name="fpvgcc",
-    version="0.5",
+    version="0.6",
     author="Chintalagiri Shashank",
     author_email="shashank@chintal.in",
     description="Analysing code footprint on embedded microcontrollers "

@@ -51,11 +51,12 @@ in your python environment by whatever means you usually use.
     fpvgcc: error: too few arguments
 
 
-Installation from Repository for Development
---------------------------------------------
+Installation for Development
+----------------------------
 
-This is the most convenient installation method if you intend to modify the
-code, either for your own use or to contribute to ``fpvgcc``.
+Installation from the repository is the most convenient installation method
+if you intend to modify the code, either for your own use or to contribute to
+``fpvgcc``.
 
 .. code-block:: console
 
