@@ -1,0 +1,4 @@
+six
+prettytable
+sphinx
+sphinx-argparse
