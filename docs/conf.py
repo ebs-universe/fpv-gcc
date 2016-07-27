@@ -40,6 +40,7 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
     'sphinx.ext.viewcode',
+    'sphinxarg.ext',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -58,7 +59,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'fpvgcc'
-copyright = u'2016, Chintalagiri Shashank'
+copyright = u'2015-16, Chintalagiri Shashank'
 author = u'Chintalagiri Shashank'
 
 # The version info for the project you're documenting, acts as replacement for

@@ -41,15 +41,9 @@ assembly listings.
     Still, remember that the file parsing was implemented by observing the
     content of real mapfiles, and not based on a file format specification.
     Even with toolchains it was written to support, there are large sections
-    of the file that are not actually used.
-
-    Due to this, the outputs generated are not always accurate. Various boundary
-    conditions result in minor errors in size reporting. Since the primary usage
-    of this module (mine) depends largely on qualitative and only incremental
-    quantitative information, I have not tried to track down and eliminate
-    these errors. If you find one, feel free to file an issue on github, and if
-    it's readily fixable, I will do so. Pull request with fixes are also
-    welcome.
+    of the file that are not actually used. Due to this, the outputs generated
+    are not always accurate. Various boundary conditions result in minor errors
+    in size reporting.
 
 
 Links

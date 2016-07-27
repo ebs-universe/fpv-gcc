@@ -1,6 +1,6 @@
 
-# Copyright (C) 2015 Quazar Technologies Pvt. Ltd.
-#               2015 Chintalagiri Shashank
+# Copyright (c)
+#   (c) 2015-16 Chintalagiri Shashank, Quazar Technologies Pvt. Ltd.
 #
 # This file is part of fpv-gcc.
 #
@@ -672,7 +672,7 @@ def print_aliases(sm):
     print(sm.memory_map.aliases)
 
 
-def main():
+def _get_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('mapfile',
                         help='GCC generated Map file to analyze.')
@@ -683,17 +683,21 @@ def main():
     action.add_argument('--sar', action='store_true',
                         help='Print summary of usage per included file.')
     action.add_argument('--sobj', metavar='ARFILE',
-                        help='Print summary of usage per included object file.')
+                        help="Print summary of usage per included object file. "
+                             "Specify '.ar' filename or 'all'.")
     action.add_argument('--ssym', metavar='FILE',
-                        help='Print summary of usage per included symbol.')
+                        help="Print summary of usage per included symbol. "
+                             "Specify '.ar' or '.o' filename or 'all'.")
     action.add_argument('--ssec', action='store_true',
                         help='Print sectioned summary of usage.')
     action.add_argument('--lmap', metavar='ROOT',
-                        help='Print descendent nodes in the linker map.')
+                        help="Print descendent nodes in the linker map. "
+                             "Specify node for which descendents should be "
+                             "printed, or 'root'.")
     action.add_argument('--lobj', metavar='OBJFILE',
-                        help='Print nodes from a specified obj file.')
+                        help="Print nodes from the specified obj file.")
     action.add_argument('--lar', metavar='ARFILE',
-                        help='Print nodes from a specified ar file.')
+                        help="Print nodes from the specified ar file.")
     action.add_argument('--uf', action='store_true',
                         help='Print list of all used files.')
     action.add_argument('--uarf', action='store_true',
@@ -709,7 +713,12 @@ def main():
     action.add_argument('--la', action='store_true',
                         help='Print list of detected aliases.')
     action.add_argument('--addr', metavar='ADDRESS',
-                        help='Describe contents at address.')
+                        help='Describe contents at specified address.')
+    return parser
+
+
+def main():
+    parser = _get_parser()
     args = parser.parse_args()
     if args.verbose == 0:
         logging.basicConfig(level=logging.ERROR)
