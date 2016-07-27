@@ -13,8 +13,8 @@ def read(fname):
 
 
 setup(
-    name="fpv-gcc",
-    version="0.6",
+    name="fpvgcc",
+    version="0.5",
     author="Chintalagiri Shashank",
     author_email="shashank@chintal.in",
     description="Analysing code footprint on embedded microcontrollers "
@@ -37,10 +37,9 @@ setup(
         'six',
         'prettytable'
     ],
-    doc_requires=[
-        'sphinx',
-        'sphinx-argparse',
-    ],
+    extras_require={
+        'docs': ['sphinx', 'sphinx-argparse']
+    },
     platforms='any',
     entry_points={
         'console_scripts': ['fpvgcc=fpvgcc.fpv:main'],

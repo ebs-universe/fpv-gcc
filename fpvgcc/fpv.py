@@ -729,8 +729,9 @@ def main():
     elif args.verbose == 3:
         logging.basicConfig(level=logging.DEBUG)
     state_machine = process_map_file(args.mapfile)
-
-    if args.sar:
+    if args.version:
+        print("fpvgcc v0.6")
+    elif args.sar:
         print_file_fp(state_machine.memory_map)
     elif args.sobj:
         print_objfile_fp(state_machine.memory_map, arfile=args.sobj)

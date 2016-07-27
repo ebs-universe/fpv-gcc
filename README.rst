@@ -51,7 +51,7 @@ Links
 
 The latest version of the documentation, including installation, usage, and
 API/developer notes can be found at
-`ReadTheDocs <http://fpv-gcc.readthedocs.org/en/latest/index.html>`_.
+`ReadTheDocs <http://fpvgcc.readthedocs.org/en/latest/index.html>`_.
 
 The latest version of the sources can be found at
 `GitHub <https://github.com/chintal/fpv-gcc>`_. Please use GitHub's features
