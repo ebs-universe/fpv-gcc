@@ -284,7 +284,11 @@ def linkermap_get_newnode(name, sm, allow_disambig=True,
     newnode = sm.memory_map.get_node(name, create=True)
     if at_fill is True:
         if newnode.is_leaf_property_set:
-            newnode.push_to_leaf()
+            try:
+                newnode.push_to_leaf()
+            except TypeError:
+                print("Error getting new node : {0}".format(name))
+                raise
             newnode = linkermap_get_newnode(
                 '{0}.{1}'.format(name, objfile.replace('.', '_')), sm,
                 allow_disambig=False, objfile=objfile, at_fill=True)

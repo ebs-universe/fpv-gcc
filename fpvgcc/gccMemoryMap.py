@@ -131,7 +131,10 @@ class GCCMemoryMapNode(SizeNTreeNode):
     @fillsize.setter
     def fillsize(self, value):
         if value:
-            self._fillsize = int(value, 16)
+            try:
+                self._fillsize = int(value, 0)
+            except TypeError:
+                self._fillsize = int(value)
         else:
             self._fillsize = 0
 
