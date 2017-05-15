@@ -37,7 +37,8 @@ class SizeNTreeNode(NTreeNode):
                 try:
                     rval += child.size
                 except TypeError:
-                    logging.warn("Size information not available for : " + child.gident)
+                    logging.warning("Size information not available for : "
+                                    + child.gident)
                     return "Err"
         return rval
 

@@ -23,6 +23,9 @@ from os.path import commonprefix
 
 
 class NTreeNode(object):
+    _leaf_property = None
+    _ident_property = None
+
     def __init__(self, parent=None, node_t=None):
         self.parent = parent
         if node_t is None:
@@ -32,8 +35,6 @@ class NTreeNode(object):
                 node_t = NTreeNode
         self.node_t = node_t
         self.children = []
-        self._leaf_property = None
-        self._ident_property = None
 
     @property
     def tree(self):
@@ -77,7 +78,7 @@ class NTreeNode(object):
         if len(self.children) == 0:
             try:
                 if self._is_leaf_property_set is True:
-                    logging.warn(
+                    logging.warning(
                         "Adding children to node which has leaf specific "
                         "information set : {0}".format(self.gident)
                     )
@@ -97,9 +98,9 @@ class NTreeNode(object):
 
     @property
     def _is_ident_property_set(self):
-        if self._ident_property is None:
+        if not self._ident_property:
             raise NotImplementedError
-        if getattr(self, self._ident_property) is not None:
+        if not getattr(self, self._ident_property, None):
             return True
         return False
 
@@ -112,13 +113,19 @@ class NTreeNode(object):
 
     @property
     def ident(self):
-        try:
-            if self._is_ident_property_set:
-                return getattr(self, self._ident_property)
-            else:
-                return ""
-        except NotImplementedError:
+        if self._ident_property:
+            return getattr(self, self._ident_property, '')
+        else:
             return str(self.idx)
+
+    @ident.setter
+    def ident(self, value):
+        if self._ident_property:
+            setattr(self, self._ident_property, value)
+
+    @property
+    def has_ident(self):
+        return self._ident_property is not None
 
     @property
     def gident(self):
@@ -174,8 +181,8 @@ class NTree(object):
 
     @property
     def top_level_idents(self):
-        if self.root._ident_property is not None:
-            return [getattr(x, x._ident_property) for x in self.top_level_nodes]
+        if self.root.has_ident:
+            return [x.ident for x in self.top_level_nodes]
         else:
             raise AttributeError
 
@@ -195,8 +202,8 @@ class NTree(object):
                 if create:
                     # print "Creating Node : " + crumb
                     newnode = walker.add_child()
-                    if newnode._ident_property is not None:
-                        setattr(newnode, newnode._ident_property, crumb)
+                    if newnode.has_ident:
+                        newnode.ident = crumb
                     else:
                         raise ValueError
                     walker = walker.get_child_by_ident(crumb)

@@ -49,12 +49,13 @@ class LinkAliases(object):
 
 
 class GCCMemoryMapNode(SizeNTreeNode):
+    _leaf_property = '_size'
+    _ident_property = 'name'
+
     def __init__(self, parent=None, node_t=None,
                  name=None, address=None, size=None, fillsize=None,
                  arfile=None, objfile=None, arfolder=None):
         super(GCCMemoryMapNode, self).__init__(parent, node_t)
-        self._leaf_property = '_size'
-        self._ident_property = 'name'
         self._size = None
         if name is None:
             if objfile is not None:
