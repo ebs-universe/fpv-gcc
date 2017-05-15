@@ -19,7 +19,7 @@
 
 
 import logging
-from ntree import NTreeNode, NTree
+from .ntree import NTreeNode, NTree
 
 
 class SizeNTreeNode(NTreeNode):

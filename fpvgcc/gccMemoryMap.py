@@ -19,7 +19,7 @@
 
 
 import logging
-from ntreeSize import SizeNTree, SizeNTreeNode
+from .ntreeSize import SizeNTree, SizeNTreeNode
 
 
 class LinkAliases(object):
@@ -29,8 +29,8 @@ class LinkAliases(object):
     def register_alias(self, target, alias):
         if alias in self._aliases.keys():
             if target != self._aliases[alias]:
-                logging.warn("Alias Collision : {0} :: {1} ; {2}"
-                             "".format(alias, target, self._aliases[alias]))
+                logging.warning("Alias Collision : {0} :: {1} ; {2}"
+                                "".format(alias, target, self._aliases[alias]))
         else:
             self._aliases[alias] = target
 
@@ -110,18 +110,18 @@ class GCCMemoryMapNode(SizeNTreeNode):
     @osize.setter
     def osize(self, value):
         if len(self.children):
-            logging.warn("Setting leaf property at a node which "
-                         "has children : {0}".format(self.gident))
+            logging.warning("Setting leaf property at a node which "
+                            "has children : {0}".format(self.gident))
         newsize = int(value, 16)
         if self._size is not None:
             if newsize != self._size:
-                logging.warn(
+                logging.warning(
                     "Overwriting leaf property at node : {0} :: {1} -> {2}"
                     "".format(self.gident, self._size, newsize)
                 )
             else:
-                logging.warn("Possibly missing leaf node "
-                             "with same name : {0}".format(self.gident))
+                logging.warning("Possibly missing leaf node "
+                                "with same name : {0}".format(self.gident))
         self._size = newsize
 
     @property
@@ -152,8 +152,8 @@ class GCCMemoryMapNode(SizeNTreeNode):
 
     def push_to_leaf(self):
         if not self.objfile:
-            logging.warn("No objfile defined. Can't push to leaf : "
-                         "{0}".format(self.gident))
+            logging.warning("No objfile defined. Can't push to leaf : "
+                            "{0}".format(self.gident))
             return
         for child in self.children:
             if child.name == self.objfile.replace('.', '_'):
@@ -245,9 +245,10 @@ class GCCMemoryMap(SizeNTree):
         for node in self.root.all_nodes():
             if node.objfile is None and node.leafsize \
                     and node.region not in ['DISCARDED', 'UNDEF']:
-                logging.warn("Object unaccounted for : {0:<40} {1:<15} {2:>5}"
-                             "".format(node.gident, node.region,
-                                       str(node.leafsize)))
+                logging.warning(
+                    "Object unaccounted for : {0:<40} {1:<15} {2:>5}"
+                    "".format(node.gident, node.region, str(node.leafsize))
+                )
                 continue
             if node.objfile not in of:
                 of.append(node.objfile)
@@ -268,9 +269,10 @@ class GCCMemoryMap(SizeNTree):
         for node in self.root.all_nodes():
             if node.arfile is None and node.leafsize \
                     and node.region not in ['DISCARDED', 'UNDEF']:
-                logging.warn("Object unaccounted for : {0:<40} {1:<15} {2:>5}"
-                             "".format(node.gident, node.region,
-                                       str(node.leafsize)))
+                logging.warning(
+                    "Object unaccounted for : {0:<40} {1:<15} {2:>5}"
+                    "".format(node.gident, node.region, str(node.leafsize))
+                )
                 continue
             if node.arfile not in af:
                 af.append(node.arfile)
@@ -285,9 +287,10 @@ class GCCMemoryMap(SizeNTree):
                     and node.region not in ['DISCARDED', 'UNDEF']:
                 if node.objfile is None and node.leafsize \
                         and node.region not in ['DISCARDED', 'UNDEF']:
-                    logging.warn(
+                    logging.warning(
                         "Object unaccounted for : {0:<40} {1:<15} {2:>5}"
-                        "".format(node.gident, node.region, str(node.leafsize)))
+                        "".format(node.gident, node.region, str(node.leafsize))
+                    )
                     continue
                 else:
                     if node.objfile not in of:

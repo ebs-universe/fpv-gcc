@@ -27,7 +27,7 @@ import logging
 import argparse
 from prettytable import PrettyTable
 
-from gccMemoryMap import GCCMemoryMap, MemoryRegion
+from .gccMemoryMap import GCCMemoryMap, MemoryRegion
 
 
 class GCCMemoryMapParserSM(object):
@@ -274,12 +274,14 @@ def linkermap_name_process(name, sm, checksection=True):
 def linkermap_get_newnode(name, sm, allow_disambig=True,
                           objfile=None, at_fill=True):
     # if allow_disambig:
-    #     if len(name.split('.')) == 2 or name.startswith('.bss.COMMON') or name.startswith('.MSP430.attributes'):
+    #     if len(name.split('.')) == 2 or \
+    #             name.startswith('.bss.COMMON') or \
+    #             name.startswith('.MSP430.attributes'):
     #         disambig = objfile.replace('.', '_')
     #         try:
     #             name = name + '.' + disambig
     #         except TypeError:
-    #             print name, objfile
+    #             print(name, objfile)
     #             raise TypeError
     newnode = sm.memory_map.get_node(name, create=True)
     if at_fill is True:
@@ -333,7 +335,8 @@ def process_linkermap_section_heading_detail_line(l, sm):
 
 def process_linkermap_symbol_line(l, sm):
     if sm.linkermap_symbol is not None:
-        logging.warn("Probably Missed Symbol Detail : " + sm.linkermap_symbol)
+        logging.warning("Probably Missed Symbol Detail : " +
+                        sm.linkermap_symbol)
         sm.linkermap_symbol = None
     match = re_linkermap['SYMBOL'].match(l)
     name = match.group('name').strip()
@@ -374,11 +377,12 @@ def process_linkermap_symbol_line(l, sm):
 
 def process_linkermap_fill_line(l, sm):
     if sm.linkermap_symbol is not None:
-        logging.warn("Probably Missed Symbol Detail : " + sm.linkermap_symbol)
+        logging.warning("Probably Missed Symbol Detail : "
+                        + sm.linkermap_symbol)
         sm.linkermap_symbol = None
 
     if sm.linkermap_lastsymbol is None or sm.linkermap_symbol is not None:
-        logging.warn("Fill Container Unknown : ", l)
+        logging.warning("Fill Container Unknown : " + l)
         return
 
     match = re_linkermap['FILL'].match(l)
@@ -388,7 +392,8 @@ def process_linkermap_fill_line(l, sm):
 
 def process_linkermap_symbolonly_line(l, sm):
     if sm.linkermap_symbol is not None:
-        logging.warn("Probably Missed Symbol Detail : " + sm.linkermap_symbol)
+        logging.warning("Probably Missed Symbol Detail : "
+                        + sm.linkermap_symbol)
         sm.linkermap_symbol = None
     match = re_linkermap['SYMBOLONLY'].match(l)
     name = match.group('name').strip()
@@ -453,7 +458,7 @@ def process_linkaliases_line(l, sm):
                 sm.linkermap_section.gident, alias
             )
         else:
-            logging.warn("Target for alias unknown : " + alias)
+            logging.warning("Target for alias unknown : " + alias)
 
 
 def process_linkermap_line(l, sm):
@@ -500,8 +505,8 @@ def process_linkermap_line(l, sm):
 def cleanup_and_pack_map(sm):
     for node in sm.memory_map.root.all_nodes():
         if len(node.children) > 0:
-            logging.warn('Force clearing leaf size for intermediate node'
-                         ' : {0}'.format(node.gident))
+            logging.warning('Force clearing leaf size for intermediate node'
+                            ' : {0}'.format(node.gident))
             node.osize = '0x0'
             node.fillsize = 0
 
@@ -537,6 +542,7 @@ def print_symbol_fp(mm, lfile='all'):
     tbl.align['SYMBOL'] = 'l'
     for region in mm.used_regions:
         tbl.align[region] = 'r'
+    tbl.align['TOTAL'] = 'r'
     tbl.padding_width = 1
     data = {}
     if lfile == 'all':
@@ -549,10 +555,11 @@ def print_symbol_fp(mm, lfile='all'):
     for symbol in symbols:
         nextrow = mm.get_symbol_fp(symbol)
         total = sum(nextrow)
-        tbl.add_row([symbol] + nextrow + [total])
+        tbl.add_row([symbol] + [x or '' for x in nextrow] + [total])
         totals = [totals[idx] + nextrow[idx] for idx in range(len(nextrow))]
     tbl.add_row(['TOTALS'] + totals + [''])
-    print(tbl.get_string(sortby='TOTAL', reversesort=True))
+    print(tbl.get_string(sortby='TOTAL', reversesort=True,
+                         sort_key=lambda x: x[-1] or 0))
 
 
 def print_objfile_fp(mm, arfile='all'):
@@ -562,6 +569,7 @@ def print_objfile_fp(mm, arfile='all'):
     tbl.align['OBJFILE'] = 'l'
     for region in mm.used_regions:
         tbl.align[region] = 'r'
+    tbl.align['TOTAL'] = 'r'
     tbl.padding_width = 1
     data = {}
     if arfile == 'all':
@@ -575,10 +583,11 @@ def print_objfile_fp(mm, arfile='all'):
     for objfile in objfiles:
         nextrow = mm.get_objfile_fp(objfile)
         total = sum(nextrow)
-        tbl.add_row([objfile] + nextrow + [total])
+        tbl.add_row([objfile] + [x or '' for x in nextrow] + [total])
         totals = [totals[idx] + nextrow[idx] for idx in range(len(nextrow))]
     tbl.add_row(['TOTALS'] + totals + [''])
-    print(tbl.get_string(sortby='TOTAL', reversesort=True))
+    print(tbl.get_string(sortby='TOTAL', reversesort=True,
+                         sort_key=lambda x: x[-1] or 0))
 
 
 def print_arfile_fp(mm):
@@ -588,6 +597,7 @@ def print_arfile_fp(mm):
     tbl.align['OBJFILE'] = 'l'
     for region in mm.used_regions:
         tbl.align[region] = 'r'
+    tbl.align['TOTAL'] = 'r'
     tbl.padding_width = 1
     data = {}
     for arfile in mm.used_arfiles:
@@ -596,10 +606,11 @@ def print_arfile_fp(mm):
     for arfile in mm.used_arfiles:
         nextrow = mm.get_arfile_fp(arfile)
         total = sum(nextrow)
-        tbl.add_row([arfile] + nextrow + [total])
+        tbl.add_row([arfile] + [x or '' for x in nextrow] + [total])
         totals = [totals[idx] + nextrow[idx] for idx in range(len(nextrow))]
     tbl.add_row(['TOTALS'] + totals + [''])
-    print(tbl.get_string(sortby='TOTAL', reversesort=True))
+    print(tbl.get_string(sortby='TOTAL', reversesort=True,
+                         sort_key=lambda x: x[-1] or 0))
 
 
 def print_file_fp(mm):
@@ -609,6 +620,7 @@ def print_file_fp(mm):
     tbl.align['FILE'] = 'l'
     for region in mm.used_regions:
         tbl.align[region] = 'r'
+    tbl.align['TOTAL'] = 'r'
     tbl.padding_width = 1
 
     objfiles, arfiles = mm.used_files
@@ -616,18 +628,19 @@ def print_file_fp(mm):
     for objfile in objfiles:
         nextrow = mm.get_objfile_fp(objfile)
         total = sum(nextrow)
-        tbl.add_row([objfile] + nextrow + [total])
+        tbl.add_row([objfile] + [x or '' for x in nextrow] + [total])
         totals = [totals[idx] + nextrow[idx] for idx in range(len(nextrow))]
 
     for arfile in arfiles:
         nextrow = mm.get_arfile_fp(arfile)
         total = sum(nextrow)
-        tbl.add_row([arfile] + nextrow + [total])
+        tbl.add_row([arfile] + [x or '' for x in nextrow] + [total])
         totals = [totals[idx] + nextrow[idx] for idx in range(len(nextrow))]
 
     tbl.add_row(['TOTALS'] + totals + [''])
 
-    print(tbl.get_string(sortby='TOTAL', reversesort=True))
+    print(tbl.get_string(sortby='TOTAL', reversesort=True,
+                         sort_key=lambda x: x[-1] or 0))
 
 
 def print_sectioned_fp(mm):
@@ -638,6 +651,7 @@ def print_sectioned_fp(mm):
     tbl.align['FILE'] = 'l'
     for section in mm.used_sections:
         tbl.align[section] = 'r'
+    tbl.align['TOTAL'] = 'r'
     tbl.padding_width = 1
 
     arfiles = []
@@ -647,18 +661,19 @@ def print_sectioned_fp(mm):
     for objfile in objfiles:
         nextrow = mm.get_objfile_fp_secs(objfile)
         total = sum(nextrow)
-        tbl.add_row([objfile] + nextrow + [total])
+        tbl.add_row([objfile] + [x or '' for x in nextrow] + [total])
         totals = [totals[idx] + nextrow[idx] for idx in range(len(nextrow))]
 
     for arfile in arfiles:
         nextrow = mm.get_arfile_fp_secs(arfile)
         total = sum(nextrow)
-        tbl.add_row([arfile] + nextrow + [total])
+        tbl.add_row([arfile] + [x or '' for x in nextrow] + [total])
         totals = [totals[idx] + nextrow[idx] for idx in range(len(nextrow))]
 
     tbl.add_row(['TOTALS'] + totals + [''])
 
-    print(tbl.get_string(sortby='TOTAL', reversesort=True))
+    print(tbl.get_string(sortby='TOTAL', reversesort=True,
+                         sort_key=lambda x: x[-1] or 0))
 
 
 def print_files_list(fl):
