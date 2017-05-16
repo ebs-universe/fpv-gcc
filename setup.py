@@ -14,7 +14,7 @@ def read(fname):
 
 setup(
     name="fpvgcc",
-    version="0.7.2",
+    version="0.7.9",
     author="Chintalagiri Shashank",
     author_email="shashank@chintal.in",
     description="Analysing code footprint on embedded microcontrollers "
@@ -42,6 +42,6 @@ setup(
     },
     platforms='any',
     entry_points={
-        'console_scripts': ['fpvgcc=fpvgcc.fpv:main'],
+        'console_scripts': ['fpvgcc=fpvgcc.cli:main'],
     }
 )
