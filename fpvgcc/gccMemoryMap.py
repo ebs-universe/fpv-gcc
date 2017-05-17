@@ -19,7 +19,8 @@
 
 
 import logging
-from .ntreeSize import SizeNTree, SizeNTreeNode
+
+from fpvgcc.datastructures.ntreeSize import SizeNTree, SizeNTreeNode
 
 
 class LinkAliases(object):

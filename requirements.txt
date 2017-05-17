@@ -1,3 +1,4 @@
+bokeh
 six
 prettytable
 sphinx

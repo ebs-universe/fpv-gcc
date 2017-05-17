@@ -11,6 +11,7 @@ from setuptools import setup
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
+wui_requires = ['bokeh']
 
 setup(
     name="fpvgcc",
@@ -35,10 +36,12 @@ setup(
     ],
     install_requires=[
         'six',
-        'prettytable'
+        'wheel',
+        'prettytable',
     ],
     extras_require={
-        'docs': ['sphinx', 'sphinx-argparse']
+        'docs': ['sphinx', 'sphinx-argparse'],
+        'wui': ['bokeh'],
     },
     platforms='any',
     entry_points={
