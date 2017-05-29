@@ -27,7 +27,7 @@ These functions print out a concise summary of memory utilization.
 
 .. rubric:: --sar
 
-Prints ouy a sumary of memory utilization per library archive file, sorted by
+Prints out a summary of memory utilization per library archive file, sorted by
 the total static memory footprint of each file. Object files which were included
 directly show up here as object files.
 
@@ -48,7 +48,7 @@ directly show up here as object files.
 
 .. rubric:: --sobj ARFILE
 
-Prints ouy a sumary of memory utilization per object file, sorted by the total
+Prints out a summary of memory utilization per object file, sorted by the total
 static memory footprint of each file.
 
 The ``ARFILE`` specified should be one of the following :
@@ -70,7 +70,7 @@ The ``ARFILE`` specified should be one of the following :
 
 .. rubric:: --ssym FILE
 
-Prints ouy a sumary of memory utilization per symbol, sorted by the total
+Prints out a summary of memory utilization per symbol, sorted by the total
 static memory footprint of each symbol.
 
 The ``FILE`` specified should be one of the following :
