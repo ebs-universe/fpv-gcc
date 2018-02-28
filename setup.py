@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 # Utility function to read the README file.
@@ -11,11 +11,13 @@ from setuptools import setup
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
-wui_requires = ['bokeh']
+
+# wui_requires = ['bokeh']
+wui_requires = []
 
 setup(
     name="fpvgcc",
-    version="0.7.9",
+    version="0.8.0",
     author="Chintalagiri Shashank",
     author_email="shashank@chintal.in",
     description="Analysing code footprint on embedded microcontrollers "
@@ -23,7 +25,7 @@ setup(
     license="GPLv3+",
     keywords="utilities",
     url="https://github.com/chintal/fpv-gcc",
-    packages=['fpvgcc'],
+    packages=find_packages(),
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Topic :: Software Development :: Embedded Systems",
@@ -41,7 +43,7 @@ setup(
     ],
     extras_require={
         'docs': ['sphinx', 'sphinx-argparse'],
-        'wui': ['bokeh'],
+        'wui': wui_requires,
     },
     platforms='any',
     entry_points={
