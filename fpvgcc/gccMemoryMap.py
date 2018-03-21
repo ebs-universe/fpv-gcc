@@ -224,19 +224,33 @@ class GCCMemoryMapNode(SizeNTreeNode):
 
 
 class GCCMemoryMap(SizeNTree):
+    # This really needs to be cleaned up. Most of the code here is pretty much an
+    # example of what NOT to do.
     node_t = GCCMemoryMapNode
+    collapse_vectors = True
 
     def __init__(self):
         self.memory_regions = []
+        self._vector_regions = []
+        self._vector_sections = []
         self.aliases = LinkAliases()
         super(GCCMemoryMap, self).__init__()
 
     @property
     def used_regions(self):
         ur = ['UNDEF']
+        if self.collapse_vectors:
+            self._vector_regions = []
+            ur.append('VEC')
         for node in self.root.all_nodes():
             if node.region not in ur:
-                ur.append(node.region)
+                if self.collapse_vectors:
+                    if 'VEC' not in node.region:
+                        ur.append(node.region)
+                    elif node.region not in self._vector_regions:
+                        self._vector_regions.append(node.region)
+                else:
+                    ur.append(node.region)
         ur.remove('UNDEF')
         ur.remove('DISCARDED')
         return ur
@@ -314,6 +328,9 @@ class GCCMemoryMap(SizeNTree):
                      sum([n.children for n in self.top_level_nodes
                           if n.region == 'UNDEF'], [])
                      if node.region != 'DISCARDED' and node.size > 0]
+        if self.collapse_vectors:
+            self._vector_sections = [x for x in sections if 'vec' in x]
+            sections = ['.*vec*'] + [x for x in sections if 'vec' not in x]
         return sections
 
     @property
@@ -338,10 +355,21 @@ class GCCMemoryMap(SizeNTree):
         return r
 
     def get_symbol_fp_rgn(self, symbol, region):
+        if self.collapse_vectors and region == "VEC":
+            return self.get_symbol_fp_rgnvec(symbol)
         rv = 0
         for node in self.root.all_nodes():
             if node.name == symbol:
                 if node.region == region:
+                    if node.leafsize is not None:
+                        rv += node.leafsize
+        return rv
+
+    def get_symbol_fp_rgnvec(self, symbol):
+        rv = 0
+        for node in self.root.all_nodes():
+            if node.name == symbol:
+                if 'VEC' in node.region:
                     if node.leafsize is not None:
                         rv += node.leafsize
         return rv
@@ -353,10 +381,21 @@ class GCCMemoryMap(SizeNTree):
         return r
 
     def get_objfile_fp_rgn(self, objfile, region):
+        if self.collapse_vectors and region == "VEC":
+            return self.get_objfile_fp_rgnvec(objfile)
         rv = 0
         for node in self.root.all_nodes():
             if node.objfile == objfile:
                 if node.region == region:
+                    if node.leafsize is not None:
+                        rv += node.leafsize
+        return rv
+
+    def get_objfile_fp_rgnvec(self, objfile):
+        rv = 0
+        for node in self.root.all_nodes():
+            if node.objfile == objfile:
+                if 'VEC' in node.region:
                     if node.leafsize is not None:
                         rv += node.leafsize
         return rv
@@ -374,6 +413,8 @@ class GCCMemoryMap(SizeNTree):
         return r
 
     def get_objfile_fp_sec(self, objfile, section):
+        if section == '.*vec*':
+            return self.get_objfile_fp_secvec(objfile)
         rv = 0
         for node in self.get_node(section).all_nodes():
             if node.objfile == objfile:
@@ -381,12 +422,32 @@ class GCCMemoryMap(SizeNTree):
                     rv += node.leafsize
         return rv
 
+    def get_objfile_fp_secvec(self, objfile):
+        rv = 0
+        for section in self._vector_sections:
+            for node in self.get_node(section).all_nodes():
+                if node.objfile == objfile:
+                    if node.leafsize is not None:
+                        rv += node.leafsize
+        return rv
+
     def get_arfile_fp_sec(self, arfile, section):
+        if section == '.*vec*':
+            return self.get_objfile_fp_secvec(arfile)
         rv = 0
         for node in self.get_node(section).all_nodes():
             if node.arfile == arfile:
                 if node.leafsize is not None:
                     rv += node.leafsize
+        return rv
+
+    def get_arfile_fp_secvec(self, arfile):
+        rv = 0
+        for section in self._vector_sections:
+            for node in self.get_node(section).all_nodes():
+                if node.arfile == arfile:
+                    if node.leafsize is not None:
+                        rv += node.leafsize
         return rv
 
     def get_arfile_fp(self, arfile):
@@ -396,10 +457,21 @@ class GCCMemoryMap(SizeNTree):
         return r
 
     def get_arfile_fp_rgn(self, arfile, region):
+        if self.collapse_vectors and region == "VEC":
+            return self.get_arfile_fp_rgnvec(arfile)
         rv = 0
         for node in self.root.all_nodes():
             if node.arfile == arfile:
                 if node.region == region:
+                    if node.leafsize is not None:
+                        rv += node.leafsize
+        return rv
+
+    def get_arfile_fp_rgnvec(self, arfile):
+        rv = 0
+        for node in self.root.all_nodes():
+            if node.arfile == arfile:
+                if 'VEC' in node.region:
                     if node.leafsize is not None:
                         rv += node.leafsize
         return rv

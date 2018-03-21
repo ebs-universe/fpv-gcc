@@ -289,6 +289,9 @@ def linkermap_get_newnode(name, sm, allow_disambig=True,
             except TypeError:
                 print("Error getting new node : {0}".format(name))
                 raise
+            except RuntimeError:
+                print("Runtime Error getting new node : {0}".format(name))
+                exit(0)
             newnode = linkermap_get_newnode(
                 '{0}.{1}'.format(name, objfile.replace('.', '_')), sm,
                 allow_disambig=False, objfile=objfile, at_fill=True)
