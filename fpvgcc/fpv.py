@@ -510,7 +510,7 @@ def process_linkermap_line(l, sm):
         if re_linkermap['SYMBOLONLY'].match(l):
             process_linkermap_symbolonly_line(l, sm)
             return
-        logging.error("Unhandled line in section : {0}".format(l.strip()))
+        logging.warning("Unhandled line in section : {0}".format(l.strip()))
     return None
 
 

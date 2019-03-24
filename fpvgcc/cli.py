@@ -205,10 +205,12 @@ def main():
     parser = _get_parser()
     args = parser.parse_args()
     if args.verbose == 0:
-        logging.basicConfig(level=logging.WARNING)
+        logging.basicConfig(level=logging.ERROR)
     elif args.verbose == 1:
-        logging.basicConfig(level=logging.INFO)
+        logging.basicConfig(level=logging.WARNING)
     elif args.verbose == 2:
+        logging.basicConfig(level=logging.INFO)
+    elif args.verbose == 3:
         logging.basicConfig(level=logging.DEBUG)
     state_machine = process_map_file(args.mapfile)
     if args.sar:

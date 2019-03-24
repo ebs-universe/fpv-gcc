@@ -159,7 +159,7 @@ class GCCMemoryMapNode(SizeNTreeNode):
             return self
         for child in self.children:
             if child.name == self.objfile.replace('.', '_'):
-                return
+                return self
         newleaf = self.add_child(name=self.objfile.replace('.', '_'))
         if self._defsize is not None:
             newleaf.defsize = hex(self._defsize)
@@ -174,6 +174,15 @@ class GCCMemoryMapNode(SizeNTreeNode):
         if self.arfolder is not None:
             newleaf.arfolder = self.arfolder
         newleaf.osize = hex(self._size)
+
+        self._size = None
+        self._defsize = None
+        self._address = None
+        self.fillsize = None
+        self.objfile = None
+        self.arfile = None
+        self.arfolder = None
+
         return newleaf
 
     @property
