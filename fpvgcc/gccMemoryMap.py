@@ -156,7 +156,7 @@ class GCCMemoryMapNode(SizeNTreeNode):
         if not self.objfile:
             logging.warning("No objfile defined. Can't push to leaf : "
                             "{0}".format(self.gident))
-            return
+            return self
         for child in self.children:
             if child.name == self.objfile.replace('.', '_'):
                 return

@@ -1,4 +1,3 @@
-
 # Copyright (c)
 #   (c) 2015-16 Chintalagiri Shashank, Quazar Technologies Pvt. Ltd.
 #
@@ -51,6 +50,18 @@ class GCCMemoryMapParserSM(object):
         self.loaded_files = []
         self.linker_defined_addresses = []
         self.memory_map = GCCMemoryMap()
+
+    def __repr__(self):
+        return "<GCCMemoryMapParserSM \n" + \
+               "   STATE           = {0}\n".format(self.state) + \
+               "   IDEP_STATE      = {0}\n".format(self.IDEP_STATE) + \
+               "    idep_archive         = {0}\n".format(self.idep_archive) + \
+               "   COMSYM_STATE    = {0}\n".format(self.COMSYM_STATE) + \
+               "    comsym_name          = {0}\n".format(self.comsym_name) + \
+               "   LINKERMAP_STATE = {0}\n".format(self.LINKERMAP_STATE) + \
+               "    linkermap_section    = {0}\n".format(self.linkermap_section) + \
+               "    linkermap_symbol     = {0}\n".format(self.linkermap_symbol) + \
+               "    linkermap_lastsymbol = {0}\n>".format(self.linkermap_lastsymbol)
 
 
 # Regular Expressions
@@ -499,7 +510,7 @@ def process_linkermap_line(l, sm):
         if re_linkermap['SYMBOLONLY'].match(l):
             process_linkermap_symbolonly_line(l, sm)
             return
-        # logging.error("Unhandled line in section : {0}".format(l.strip()))
+        logging.error("Unhandled line in section : {0}".format(l.strip()))
     return None
 
 

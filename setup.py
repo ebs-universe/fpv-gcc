@@ -17,7 +17,7 @@ wui_requires = []
 
 setup(
     name="fpvgcc",
-    version="0.8.1",
+    version="0.8.2",
     author="Chintalagiri Shashank",
     author_email="shashank@chintal.in",
     description="Analysing code footprint on embedded microcontrollers "

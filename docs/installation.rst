@@ -39,10 +39,10 @@ in your python environment by whatever means you usually use.
 
 .. code-block:: console
 
-    $ wget https://github.com/chintal/fpv-gcc/archive/v0.6.zip
-    $ unzip fpv-gcc-0.6.zip
+    $ wget https://github.com/chintal/fpv-gcc/archive/v0.8.2.zip
+    $ unzip fpv-gcc-0.8.2.zip
     ...
-    $ cd fpv-gcc-0.6
+    $ cd fpv-gcc-0.8.2
     $ sudo python setup.py install
     ...
     $ fpvgcc
