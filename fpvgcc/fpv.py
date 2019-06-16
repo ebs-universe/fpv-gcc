@@ -28,7 +28,8 @@ from .gccMemoryMap import GCCMemoryMap, MemoryRegion
 
 
 class GCCMemoryMapParserSM(object):
-    def __init__(self):
+    def __init__(self, ctx):
+        self.ctx = ctx
         self.state = 'START'
 
         self.IDEP_STATE = 'START'
@@ -49,7 +50,7 @@ class GCCMemoryMapParserSM(object):
 
         self.loaded_files = []
         self.linker_defined_addresses = []
-        self.memory_map = GCCMemoryMap()
+        self.memory_map = GCCMemoryMap(self.ctx)
 
     def __repr__(self):
         return "<GCCMemoryMapParserSM \n" + \
@@ -523,8 +524,8 @@ def cleanup_and_pack_map(sm):
             node.fillsize = 0
 
 
-def process_map_file(fname):
-    sm = GCCMemoryMapParserSM()
+def process_map_file(fname, profile):
+    sm = GCCMemoryMapParserSM(ctx=profile)
     with open(fname) as f:
         for line in f:
             if not line.strip():

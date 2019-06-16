@@ -27,6 +27,9 @@ import logging
 from prettytable import PrettyTable
 
 from .fpv import process_map_file
+from .profiles import profiles
+from .profiles import get_profile
+from .profiles.guess import guess_profile
 
 
 def _build_table_header(cols, rowtitle):
@@ -163,6 +166,8 @@ def _get_parser():
     parser.add_argument('-v', '--verbose',
                         help='Include detailed warnings in the output.',
                         action='count', default=0)
+    parser.add_argument('-p', '--profile', metavar='PROFILE',
+                        choices=profiles.keys(), default='auto')
     action = parser.add_mutually_exclusive_group(required=True)
     action.add_argument('--sar', action='store_true',
                         help='Print summary of usage per included file.')
@@ -212,7 +217,12 @@ def main():
         logging.basicConfig(level=logging.INFO)
     elif args.verbose == 3:
         logging.basicConfig(level=logging.DEBUG)
-    state_machine = process_map_file(args.mapfile)
+    if args.profile == 'auto':
+        pname = guess_profile(args.mapfile)
+    else:
+        pname = args.profile
+    profile = get_profile(pname)
+    state_machine = process_map_file(args.mapfile, profile=profile)
     if args.sar:
         print_file_fp(state_machine.memory_map)
     elif args.sobj:

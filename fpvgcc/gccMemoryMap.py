@@ -79,6 +79,10 @@ class GCCMemoryMapNode(SizeNTreeNode):
         self.fillsize = fillsize
 
     @property
+    def ctx(self):
+        return self.parent.ctx
+
+    @property
     def address(self):
         if self._address is not None:
             return format(self._address, '#010x')
@@ -209,9 +213,7 @@ class GCCMemoryMapNode(SizeNTreeNode):
             return 'DISCARDED'
         # Suppressed root identifiers for MSP430 GCC. A better mechanism to
         # provide user access to manipulate this set is needed.
-        if self.name in ['debug_info', 'debug_line', 'debug_str', 'debug_loc',
-                         'debug_frame', 'debug_ranges', 'debug_aranges',
-                         'debug_abbrev', 'comment', 'MSP430']:
+        if self.ctx and self.name in self.ctx.suppressed_names:
             return 'DISCARDED'
         if self._address is None:
             return 'UNDEF'
@@ -244,7 +246,8 @@ class GCCMemoryMap(SizeNTree):
     node_t = GCCMemoryMapNode
     collapse_vectors = True
 
-    def __init__(self):
+    def __init__(self, ctx):
+        self.ctx = ctx
         self.memory_regions = []
         self._vector_regions = []
         self._vector_sections = []
