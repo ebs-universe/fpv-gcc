@@ -207,6 +207,12 @@ class GCCMemoryMapNode(SizeNTreeNode):
         if not isinstance(self.parent, GCCMemoryMap) and \
                 self.parent.region == 'DISCARDED':
             return 'DISCARDED'
+        # Suppressed root identifiers for MSP430 GCC. A better mechanism to
+        # provide user access to manipulate this set is needed.
+        if self.name in ['debug_info', 'debug_line', 'debug_str', 'debug_loc',
+                         'debug_frame', 'debug_ranges', 'debug_aranges',
+                         'debug_abbrev', 'comment', 'MSP430']:
+            return 'DISCARDED'
         if self._address is None:
             return 'UNDEF'
         # tla = self.get_top_level_ancestor
