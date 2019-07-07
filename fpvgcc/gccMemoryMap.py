@@ -182,7 +182,8 @@ class GCCMemoryMapNode(SizeNTreeNode):
 
         self._size = None
         self._defsize = None
-        self._address = None
+        if not self.is_toplevelnode:
+            self._address = None
         self.fillsize = None
         self.objfile = None
         self.arfile = None

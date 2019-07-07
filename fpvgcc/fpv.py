@@ -283,14 +283,15 @@ def linkermap_name_process(name, sm, checksection=True):
 
 def linkermap_get_newnode(name, sm, allow_disambig=True,
                           objfile=None, at_fill=True):
+    # print("getting new node :", name)
     newnode = sm.memory_map.get_node(name, create=True)
     if at_fill is True:
-        if newnode.is_leaf_property_set:
+        if newnode.is_leaf_property_set or newnode._address is not None:
             # The node isn't a new one. The present data within it needs to be
             # handled first.
 
             # Push the current node into it's own leaf node. This is enough for most
-            # cases
+            # cases.
             try:
                 newnode.push_to_leaf()
             except TypeError:
