@@ -283,19 +283,14 @@ def linkermap_name_process(name, sm, checksection=True):
 
 def linkermap_get_newnode(name, sm, allow_disambig=True,
                           objfile=None, at_fill=True):
-    # if allow_disambig:
-    #     if len(name.split('.')) == 2 or \
-    #             name.startswith('.bss.COMMON') or \
-    #             name.startswith('.MSP430.attributes'):
-    #         disambig = objfile.replace('.', '_')
-    #         try:
-    #             name = name + '.' + disambig
-    #         except TypeError:
-    #             print(name, objfile)
-    #             raise TypeError
     newnode = sm.memory_map.get_node(name, create=True)
     if at_fill is True:
         if newnode.is_leaf_property_set:
+            # The node isn't a new one. The present data within it needs to be
+            # handled first.
+
+            # Push the current node into it's own leaf node. This is enough for most
+            # cases
             try:
                 newnode.push_to_leaf()
             except TypeError:
@@ -304,9 +299,23 @@ def linkermap_get_newnode(name, sm, allow_disambig=True,
             except RuntimeError:
                 print("Runtime Error getting new node : {0}".format(name))
                 exit(0)
+
+            # Now generate the new node as a child of the original target. In some cases
+            # this needs the node disambiguation element included.
+            newnodename = objfile.replace('.', '_')
+            newnodepath = "{0}.{1}".format(name, newnodename)
+
+            # Check if disambiguation is already initialized or is recommended
+            disambig = sm.memory_map.get_node_disambig(newnodepath, prospective=True)
+
+            # Accordingly modify name as needed
+            if disambig is not None:
+                newnodepath = "{0}:{1}".format(newnodepath, disambig + 1)
+
+            # Get the new child node for what was originally requested
             newnode = linkermap_get_newnode(
-                '{0}.{1}'.format(name, objfile.replace('.', '_')), sm,
-                allow_disambig=False, objfile=objfile, at_fill=True)
+                newnodepath, sm, allow_disambig=False, objfile=objfile, at_fill=True
+            )
     return newnode
 
 
