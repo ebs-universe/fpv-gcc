@@ -162,6 +162,7 @@ class GCCMemoryMapNode(SizeNTreeNode):
                             "{0}".format(self.gident))
             return self
         for child in self.children:
+            # TODO This probably discards data which could be preserved
             if child.name == self.objfile.replace('.', '_'):
                 return self
         newleaf = self.add_child(name=self.objfile.replace('.', '_'))
@@ -191,10 +192,6 @@ class GCCMemoryMapNode(SizeNTreeNode):
 
     @property
     def leafsize(self):
-        # if 'DISCARDED' in self.region:
-        # return 0
-        # if len(self.children) > 0:
-        #     raise AttributeError
         if self.fillsize is not None:
             if self._size is not None:
                 return self._size + self.fillsize
@@ -217,14 +214,12 @@ class GCCMemoryMapNode(SizeNTreeNode):
             return 'DISCARDED'
         if self._address is None:
             return 'UNDEF'
-        # tla = self.get_top_level_ancestor
-        # if tla is not None and tla is not self:
-        # if tla.region == 'DISCARDED':
-        # return 'DISCARDED TLA'
         if self._address == 0:
             return "DISCARDED"
         for region in self.tree.memory_regions:
             if self._address in region:
+                if region.name in self.ctx.suppressed_regions:
+                    return 'DISCARDED'
                 return region.name
         raise ValueError(self._address)
 
