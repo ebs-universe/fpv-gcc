@@ -71,6 +71,8 @@ def print_symbol_fp(mm, lfile='all'):
 
     for symbol in symbols:
         nextrow = mm.get_symbol_fp(symbol)
+        if not sum(nextrow):
+            continue
         totals = _add_row(tbl, symbol, nextrow, totals)
 
     _add_totals_row(tbl, totals)
