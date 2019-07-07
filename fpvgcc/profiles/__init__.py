@@ -1,6 +1,5 @@
 
 
-from copy import copy
 from .context import ContextBase
 from .gcc_msp430 import ProfileGccMsp430
 
@@ -15,9 +14,9 @@ def _load_profiles():
 profiles = _load_profiles()
 
 
-def get_profile(id):
-    if id in profiles.keys():
-        return profiles[id]()
+def get_profile(idn):
+    if idn in profiles.keys():
+        return profiles[idn]()
     else:
         return profiles['default']()
 
