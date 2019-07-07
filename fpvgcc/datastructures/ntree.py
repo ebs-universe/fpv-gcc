@@ -142,6 +142,19 @@ class NTreeNode(object):
                 return child
         raise ValueError
 
+    def get_child_disambig(self, ident, prospective=False):
+        disambig = None
+        for child in self.children:
+            if ':' in child.ident:
+                name, d = child.ident.split(':')
+                if name == ident:
+                    disambig = disambig or 0
+                    disambig = max(disambig, int(d))
+            elif prospective and child.ident == ident:
+                # print("Recommending disambig for {0};{1}".format(self.gident, ident))
+                disambig = disambig or 0
+        return disambig
+
     def get_descendent_by_ident(self, ident):
         res = self.get_child_by_ident(ident)
         if res is not None:
@@ -189,6 +202,19 @@ class NTree(object):
     @property
     def top_level_gidents(self):
         return [x.gident for x in self.top_level_nodes]
+
+    def get_node_disambig(self, gident, prospective=False):
+        crumbs = gident.split('.')
+        if crumbs[0] != self.root.ident:
+            raise ValueError
+        walker = self.root
+        for crumb in crumbs[1:-1]:
+            if walker.get_child_disambig(crumb) is None:
+                walker = walker.get_child_by_ident(crumb)
+            else:
+                raise ValueError('Deep disambig found at intermediate node : '
+                                 '{0}'.format(crumbs))
+        return walker.get_child_disambig(crumbs[-1], prospective)
 
     def get_node(self, gident, create=False):
         crumbs = gident.split('.')
