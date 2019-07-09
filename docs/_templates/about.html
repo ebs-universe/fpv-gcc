@@ -15,17 +15,19 @@
 <p class="blurb">{{ theme_description }}</p>
 {% endif %}
 
+{% set githubpath = theme_github_user + '/' + theme_github_repo %}
+
 <a class="badge" href="">
     <img
         alt="GitHub watchers"
-        src="https://img.shields.io/github/watchers/chintal/fpv-gcc.svg?label=watch&style=social"
+        src="https://img.shields.io/github/watchers/{{ githubpath }}.svg?label=watch&style=social"
     />
 </a>
 
 <a class="badge" href="">
     <img
         alt="Project License"
-        src="https://img.shields.io/pypi/l/fpvgcc.svg"
+        src="https://img.shields.io/pypi/l/{{ project }}.svg"
     />
 </a>
 
@@ -42,19 +44,16 @@
     />
 </a>
 
-{% set githubpath = theme_github_user + '/' + theme_github_repo %}
-
 <a class="badge" href="https://travis-ci.org/{{ githubpath }}">
     <img
         alt="Travis CI Build Status"
         src="https://img.shields.io/travis/{{ githubpath }}.svg?logo=travis"
     />
 </a>
+
 <a class="badge" href="">
     <img
         alt="Coveralls Code Coverage"
         src="https://img.shields.io/coveralls/github/{{ githubpath }}.svg?logo=coveralls"
     />
 </a>
-
-
