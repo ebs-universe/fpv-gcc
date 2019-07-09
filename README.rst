@@ -1,19 +1,18 @@
 
 
 .. image:: https://img.shields.io/pypi/v/fpvgcc.svg?logo=pypi
-    :alt: PyPI
     :target: https://pypi.org/project/fpvgcc
+
 .. image:: https://img.shields.io/pypi/pyversions/fpvgcc.svg?logo=pypi
-    :alt: PyPI - Python Version
     :target: https://pypi.org/project/fpvgcc
+
 .. image:: https://img.shields.io/travis/chintal/fpv-gcc.svg?logo=travis
-    :alt: Travis
     :target: https://travis-ci.org/chintal/fpv-gcc
+
 .. image:: https://img.shields.io/coveralls/github/chintal/fpv-gcc.svg?logo=coveralls
-    :alt: Coveralls
     :target: https://coveralls.io/github/chintal/fpv-gcc
+
 .. image:: https://img.shields.io/pypi/l/fpvgcc.svg
-    :alt: License
     :target: https://www.gnu.org/licenses/gpl-3.0.en.html
 
 .. inclusion-marker-do-not-remove
