@@ -148,8 +148,6 @@ html_theme_options = {
     'touch_icon': 'favicon.ico',
     'github_repo': _github_repo,
     'github_user': _github_user,
-    'github_button': True,
-    'github_count': False,
 }
 
 # The name for this set of Sphinx documents.  If None, it defaults to

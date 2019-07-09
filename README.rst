@@ -1,4 +1,18 @@
 
+
+.. image:: https://img.shields.io/pypi/v/fpvgcc.svg?logo=pypi
+    :alt: PyPI
+.. image:: https://img.shields.io/pypi/pyversions/fpvgcc.svg?logo=pypi
+    :alt: PyPI - Python Version
+.. image:: https://img.shields.io/travis/chintal/fpv-gcc.svg?logo=travis
+    :alt: Travis
+.. image:: https://img.shields.io/coveralls/github/chintal/fpv-gcc.svg?logo=coveralls
+    :alt: Coveralls
+.. image:: https://img.shields.io/pypi/l/fpvgcc.svg
+    :alt: License
+
+.. inclusion-marker-do-not-remove
+
 Introduction
 ============
 
