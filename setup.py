@@ -9,7 +9,19 @@ from setuptools import setup, find_packages
 # README file and 2) it's easier to type in the README file than to put a raw
 # string in below ...
 def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+    orig_content = open(os.path.join(os.path.dirname(__file__), fname)).readlines()
+    content = ""
+    in_raw_directive = 0
+    for line in orig_content:
+        if in_raw_directive:
+            if not line.strip():
+                in_raw_directive = in_raw_directive - 1
+            continue
+        elif line.strip() == '.. raw:: latex':
+            in_raw_directive = 2
+            continue
+        content += line
+    return content
 
 
 # wui_requires = ['bokeh']
