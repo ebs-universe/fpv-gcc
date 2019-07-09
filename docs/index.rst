@@ -4,14 +4,25 @@
    contain the root `toctree` directive.
 
 
-
 fpvgcc Documentation
---------------------
+====================
+
+.. include:: ../README.rst
+    :start-after: inclusion-marker-do-not-remove
+
+
+.. toctree::
+   :hidden:
+
+   readme
+
+
+Contents
+--------
 
 .. toctree::
    :maxdepth: 3
 
-   readme
    installation
    usage
    api
