@@ -15,8 +15,11 @@ fpvgcc Documentation
        \vspace*{\fill}
 
 .. tabularcolumns:: >{\raggedleft\arraybackslash}\Y{0.1} >{\raggedright\arraybackslash}\Y{0.5}
+
 .. list-table::
+    :widths: 8 40
     :header-rows: 0
+
 
     * -
         .. figure:: _static/logo_packed.png
@@ -26,7 +29,7 @@ fpvgcc Documentation
 
             \vspace{-1.5em}
 
-        ``fpvgcc`` is a part of the EBS universe of packages and tools for constrained embedded systems
+        ``fpvgcc`` is part of the EBS universe of packages and tools for constrained embedded systems
 
 .. raw:: latex
 
