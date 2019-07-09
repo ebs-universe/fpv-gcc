@@ -279,6 +279,7 @@ latex_maketitle_override = r'''
         \noindent\begin{minipage}{0.3\textwidth}
         \sphinxlogo%
         \end{minipage}
+        \thispagestyle{empty}
         \hfill
         \begin{minipage}{0.65\textwidth}
         \begin{flushright}    
@@ -300,6 +301,21 @@ latex_maketitle_override = r'''
     \makeatother
 '''
 
+latex_pagestyle_override = r"""
+    \makeatletter
+      \fancypagestyle{normal}{ 
+        \fancyhf{}
+        \fancyhead[L]{\rightmark}
+        \fancyhead[C]{\@title, \py@release}
+        \fancyhead[R]{\thepage}
+        \fancyfoot[R]{\includegraphics[]{logo_packed.png}}
+      }
+    \makeatother
+"""
+
+# \renewcommand{\headrulewidth}{0.4pt}
+# \renewcommand{\footrulewidth}{0.4pt}
+
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     # 'papersize': 'letterpaper',
@@ -309,7 +325,8 @@ latex_elements = {
 
     # Additional stuff for the LaTeX preamble.
     'preamble': r'\definecolor{VerbatimBorderColor}{rgb}{1,1,1}' +
-                latex_maketitle_override,
+                latex_maketitle_override +
+                latex_pagestyle_override,
 
     'maketitle': r'\maketitle',
     'tableofcontents': r'',

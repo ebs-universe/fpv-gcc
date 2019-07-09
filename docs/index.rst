@@ -10,6 +10,29 @@ fpvgcc Documentation
 .. include:: ../README.rst
     :start-after: inclusion-marker-do-not-remove
 
+.. raw:: latex
+
+       \vspace*{\fill}
+
+.. tabularcolumns:: >{\raggedleft\arraybackslash}\Y{0.1} >{\raggedright\arraybackslash}\Y{0.5}
+.. list-table::
+    :header-rows: 0
+
+    * -
+        .. figure:: _static/logo_packed.png
+                :align: right
+      -
+        .. raw:: latex
+
+            \vspace{-1.5em}
+
+        ``fpvgcc`` is a part of the EBS universe of packages and tools for constrained embedded systems
+
+.. raw:: latex
+
+      \clearpage
+
+
 Documentation
 -------------
 

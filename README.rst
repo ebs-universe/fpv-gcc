@@ -17,6 +17,10 @@
 
 .. inclusion-marker-do-not-remove
 
+.. raw:: latex
+
+       \vspace*{\fill}
+
 Introduction
 ------------
 
@@ -93,7 +97,3 @@ to report bugs, request features, or submit pull/merge requests.
 ``fpvgcc`` is distributed under the terms of the
 `GPLv3 license <https://www.gnu.org/licenses/gpl-3.0-standalone.html>`_ .
 A copy of the text of the license is included along with the sources.
-
-.. raw:: latex
-
-    \clearpage
