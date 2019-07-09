@@ -35,8 +35,8 @@ for m in _dist._get_metadata(_dist.PKG_INFO):
 
 sys.path.insert(0, os.path.abspath(os.pardir))
 autodoc_default_options = {
-    'members': True, 'undoc-members': True,
-    'private-members': True, 'show-inheritance': True
+    'members': None, 'undoc-members': None,
+    'private-members': None, 'show-inheritance': None
 }
 autodoc_member_order = 'bysource'
 autoclass_content = 'init'
