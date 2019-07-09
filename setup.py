@@ -22,6 +22,7 @@ setup(
     author_email="shashank@chintal.in",
     description="Analysing code footprint on embedded microcontrollers "
                 "using GCC generated Map files",
+    long_description=read('README.rst'),
     license="GPLv3+",
     keywords="utilities",
     url="https://github.com/chintal/fpv-gcc",
