@@ -17,7 +17,7 @@ wui_requires = []
 
 setup(
     name="fpvgcc",
-    version="0.9.1",
+    use_scm_version={"root": ".", "relative_to": __file__},
     author="Chintalagiri Shashank",
     author_email="shashank@chintal.in",
     description="Analysing code footprint on embedded microcontrollers "
@@ -41,12 +41,28 @@ setup(
         'wheel',
         'prettytable',
     ],
+    setup_requires=[
+        'setuptools_scm',
+    ],
     extras_require={
-        'docs': ['sphinx', 'sphinx-argparse'],
+        'docs': [
+            'sphinx',
+            'sphinx-argparse',
+            'alabaster',
+        ],
         'wui': wui_requires,
+        'build': [
+            'doit',
+            'setuptools_scm',
+            'wheel',
+            'twine',
+            'pygithub',
+            'pyinstaller'
+        ]
     },
     platforms='any',
     entry_points={
         'console_scripts': ['fpvgcc=fpvgcc.cli:main'],
-    }
+    },
+    include_package_data=True
 )

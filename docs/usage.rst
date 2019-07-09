@@ -11,7 +11,7 @@ Script usage and arguments are listed here. This help listing can also be
 obtained on the command line with ``fpvgcc --help``.
 
 .. argparse::
-    :module: fpvgcc.fpv
+    :module: fpvgcc.cli
     :func: _get_parser
     :prog: fpvgcc
     :nodefault:
@@ -97,6 +97,22 @@ The ``FILE`` specified should be one of the following :
 .. rubric:: --ssec
 
 Prints out a summary of memory utilization per object file, per section.
+
+The --ssec output can get pretty garbled very easily. The table that it results
+in is simply far too large (wide), and each line overflows (wraps) into a
+number of lines with even a slightly non-trivial program.
+
+It exists because at some point in the distant future, when I have the time,
+I would want to put in a web or desktop UI which would be able to handle the
+details, with baobab or filelight as a model of what I would want it to
+look and feel like.
+
+As it stands, the per-section split of memory utilization is rarely useful.
+I would recommend using the other more compact and useful outputs instead,
+starting with --sar followed by --ssym all.
+
+Pull requests which imrprove the output of print_sectioned_fp() of cli.py are
+always welcome.
 
 
 Linker Map Nodes

@@ -4,14 +4,14 @@
    contain the root `toctree` directive.
 
 
-.. include:: ../README.rst
 
-Documentation
--------------
+fpvgcc Documentation
+--------------------
 
 .. toctree::
    :maxdepth: 3
 
+   readme
    installation
    usage
    api

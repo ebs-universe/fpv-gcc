@@ -2,3 +2,5 @@ include LICENSE
 include README.rst
 include docs/*.rst
 include docs/Makefile
+include docs/_static/*
+include docs/_templates/*.html
