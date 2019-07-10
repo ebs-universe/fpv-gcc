@@ -144,7 +144,7 @@ html_theme = "alabaster"
 # documentation.
 html_theme_options = {
     'description': _package_description,
-    'fixed_sidebar': True,
+    'fixed_sidebar': False,
     'touch_icon': 'favicon.ico',
     'github_repo': _github_repo,
     'github_user': _github_user,
