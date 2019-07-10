@@ -17,8 +17,9 @@ obtained on the command line with ``fpvgcc --help``.
     :nodefault:
 
 The various available analysis functions are described below. Additional
-analysis may be possible using changes to the code, and is not covered in
-this documentation.
+analysis may be possible using changes to the code and/or direct manipulation
+of the parsed memory map in the python interpreter / shell, and is not covered
+in this documentation.
 
 Memory Utilization Summaries
 ----------------------------

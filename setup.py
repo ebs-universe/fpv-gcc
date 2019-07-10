@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+# -*- encoding: utf-8 -*-
+
+from __future__ import absolute_import
+from __future__ import print_function
 
 import os
 from setuptools import setup, find_packages
@@ -34,21 +38,40 @@ setup(
     author_email="shashank@chintal.in",
     description="Analysing code footprint on embedded microcontrollers "
                 "using GCC generated Map files",
-    long_description=read('README.rst'),
+    long_description='\n'.join([read('README.rst'), read('CHANGELOG.rst')]),
+    long_description_content_type='text/x-rst',
     license="GPLv3+",
     keywords="utilities",
     url="https://github.com/chintal/fpv-gcc",
-    packages=find_packages(),
+    project_urls={
+        'Source Repository': 'https://github.com/chintal/fpv-gcc/',
+        'Documentation': 'https://fpvgcc.readthedocs.io/en/latest/index.html',
+        'Issue Tracker': 'https://github.com/chintal/fpv-gcc/issues',
+    },
+    packages=find_packages('src'),
+    package_dir={'': 'src'},
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        'Development Status :: 4 - Beta',
+        'Topic :: Utilities',
         "Topic :: Software Development :: Embedded Systems",
         "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
         "Programming Language :: Python",
         "Intended Audience :: Developers",
         "Natural Language :: English",
         "Operating System :: OS Independent",
-        "Environment :: Console"
+        "Environment :: Console",
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: Implementation :: CPython',
+        'Programming Language :: Python :: Implementation :: PyPy',
     ],
+    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*',
     install_requires=[
         'six',
         'wheel',
