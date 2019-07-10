@@ -40,7 +40,6 @@ setup(
                 "using GCC generated Map files",
     long_description='\n'.join([read('README.rst'), read('CHANGELOG.rst')]),
     long_description_content_type='text/x-rst',
-    license="GPLv3+",
     keywords="utilities",
     url="https://github.com/chintal/fpv-gcc",
     project_urls={

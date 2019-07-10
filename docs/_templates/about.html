@@ -17,13 +17,6 @@
 
 {% set githubpath = theme_github_user + '/' + theme_github_repo %}
 
-<a class="badge" href="https://github.com/{{ githubpath }}">
-    <img
-        alt="GitHub watchers"
-        src="https://img.shields.io/github/watchers/{{ githubpath }}.svg?label=watch&style=social"
-    />
-</a>
-
 <a class="badge" href="">
     <img
         alt="Project License"
@@ -37,6 +30,7 @@
         src="https://img.shields.io/pypi/v/{{ project }}.svg"
     />
 </a>
+
 <a class="badge" href="https://pypi.org/project/{{ project }}">
     <img
         alt="Supported Python Versions"
@@ -57,3 +51,11 @@
         src="https://img.shields.io/coveralls/github/{{ githubpath }}.svg?logo=coveralls"
     />
 </a>
+
+<a class="badge" href="https://github.com/{{ githubpath }}">
+    <img
+        alt="GitHub watchers"
+        src="https://img.shields.io/github/watchers/{{ githubpath }}.svg?label=watch&style=social"
+    />
+</a>
+
