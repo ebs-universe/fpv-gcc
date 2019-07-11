@@ -25,6 +25,7 @@ import re
 import logging
 
 from .gccMemoryMap import GCCMemoryMap, MemoryRegion
+from .profiles import get_profile
 
 
 class GCCMemoryMapParserSM(object):
@@ -534,7 +535,9 @@ def cleanup_and_pack_map(sm):
             node.fillsize = 0
 
 
-def process_map_file(fname, profile):
+def process_map_file(fname, profile=None):
+    if profile is None:
+        profile = get_profile('default')
     sm = GCCMemoryMapParserSM(ctx=profile)
     with open(fname) as f:
         for line in f:

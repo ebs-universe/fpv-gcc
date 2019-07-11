@@ -28,8 +28,25 @@ def read(fname):
     return content
 
 
+core_dependencies = [
+    'six',
+    'prettytable'
+]
+
 # wui_requires = ['bokeh']
 wui_requires = []
+
+install_requires = core_dependencies + ['wheel']
+
+setup_requires = ['setuptools_scm']
+
+doc_requires = setup_requires + ['sphinx', 'sphinx-argparse', 'alabaster']
+
+test_requires = doc_requires + ['pytest', 'tox', 'coveralls', 'pytest-cov']
+
+build_requires = test_requires + ['doit', 'pyinstaller']
+
+publish_requires = build_requires + ['twine', 'pygithub']
 
 setup(
     name="fpvgcc",
@@ -69,29 +86,15 @@ setup(
         'Programming Language :: Python :: Implementation :: PyPy',
     ],
     python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*',
-    install_requires=[
-        'six',
-        'wheel',
-        'prettytable',
-    ],
-    setup_requires=[
-        'setuptools_scm',
-    ],
+    install_requires=install_requires,
+    setup_requires=setup_requires,
     extras_require={
-        'docs': [
-            'sphinx',
-            'sphinx-argparse',
-            'alabaster',
-        ],
         'wui': wui_requires,
-        'build': [
-            'doit',
-            'setuptools_scm',
-            'wheel',
-            'twine',
-            'pygithub',
-            'pyinstaller'
-        ]
+        'docs': doc_requires,
+        'tests': test_requires,
+        'build': build_requires,
+        'publish': publish_requires,
+        'dev': build_requires,
     },
     platforms='any',
     entry_points={
