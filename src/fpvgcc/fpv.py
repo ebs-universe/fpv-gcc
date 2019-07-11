@@ -68,11 +68,11 @@ class GCCMemoryMapParserSM(object):
 
 # Regular Expressions
 re_headings = {
-    'IN_DEPENDENCIES': re.compile("Archive member [\s\w]* file \(symbol\)"),
-    'IN_COMMON_SYMBOLS': re.compile("Allocating common symbols"),
-    'IN_DISCARDED_INPUT_SECTIONS': re.compile("Discarded input sections"),
-    'IN_MEMORY_CONFIGURATION': re.compile("Memory Configuration"),
-    'IN_LINKER_SCRIPT_AND_MEMMAP': re.compile("Linker script and memory map")}
+    'IN_DEPENDENCIES': re.compile(r"Archive member [\s\w]* file \(symbol\)"),
+    'IN_COMMON_SYMBOLS': re.compile(r"Allocating common symbols"),
+    'IN_DISCARDED_INPUT_SECTIONS': re.compile(r"Discarded input sections"),
+    'IN_MEMORY_CONFIGURATION': re.compile(r"Memory Configuration"),
+    'IN_LINKER_SCRIPT_AND_MEMMAP': re.compile(r"Linker script and memory map")}
 
 re_b1_archive = re.compile(
     r'^(?P<folder>.*/)?(?P<archive>:|(.+?)(?:(\.[^.]*)))\((?P<symbol>.*)\)$'
