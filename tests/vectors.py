@@ -16,4 +16,4 @@ EXAMPLE_FILES = {
 def example_map(request):
     filename = request.param
     vectors = EXAMPLE_FILES[filename]
-    return process_map_file(filename), vectors
+    return process_map_file(filename, profile='auto'), vectors
