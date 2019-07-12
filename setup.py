@@ -42,7 +42,7 @@ setup_requires = ['setuptools_scm']
 
 doc_requires = setup_requires + ['sphinx', 'sphinx-argparse', 'alabaster']
 
-test_requires = doc_requires + ['pytest', 'tox', 'pytest-cov', 'coveralls[yaml]']
+test_requires = doc_requires + ['pytest', 'pytest-cov', 'coveralls[yaml]']
 
 build_requires = test_requires + ['doit', 'pyinstaller']
 

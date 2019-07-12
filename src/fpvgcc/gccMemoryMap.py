@@ -237,8 +237,8 @@ class GCCMemoryMapNode(SizeNTreeNode):
 
 
 class GCCMemoryMap(SizeNTree):
-    # This really needs to be cleaned up. Most of the code here is pretty much an
-    # example of what NOT to do.
+    # This really needs to be cleaned up. Most of the code here is pretty
+    # much an example of what NOT to do.
     node_t = GCCMemoryMapNode
     collapse_vectors = True
 

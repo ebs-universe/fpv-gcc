@@ -19,4 +19,3 @@ def get_profile(idn):
         return profiles[idn]()
     else:
         return profiles['default']()
-

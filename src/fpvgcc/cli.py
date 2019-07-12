@@ -174,8 +174,8 @@ def _get_parser():
     action.add_argument('--sar', action='store_true',
                         help='Print summary of usage per included file.')
     action.add_argument('--sobj', metavar='ARFILE',
-                        help="Print summary of usage per included object file. "
-                             "Specify '.ar' filename or 'all'.")
+                        help="Print summary of usage per included object "
+                             "file. Specify '.a' filename or 'all'.")
     action.add_argument('--ssym', metavar='FILE',
                         help="Print summary of usage per included symbol. "
                              "Specify '.ar' or '.o' filename or 'all'.")

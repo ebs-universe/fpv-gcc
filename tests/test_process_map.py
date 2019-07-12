@@ -1,11 +1,11 @@
 
 
-import pytest
-from fpvgcc.fpv import process_map_file
+from fpvgcc.fpv import GCCMemoryMapParserSM
+from fpvgcc.gccMemoryMap import GCCMemoryMap
+from .vectors import example_map
 
-from .vectors import EXAMPLE_FILES
 
-
-@pytest.mark.parametrize('filename', EXAMPLE_FILES)
-def test_process_map(filename):
-    mm = process_map_file(filename)
+def test_process_map(example_map):
+    mm, vectors = example_map
+    assert isinstance(mm, GCCMemoryMapParserSM)
+    assert isinstance(mm.memory_map, GCCMemoryMap)

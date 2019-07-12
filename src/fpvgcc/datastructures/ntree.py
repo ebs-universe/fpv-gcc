@@ -151,7 +151,8 @@ class NTreeNode(object):
                     disambig = disambig or 0
                     disambig = max(disambig, int(d))
             elif prospective and child.ident == ident:
-                # print("Recommending disambig for {0};{1}".format(self.gident, ident))
+                # print("Recommending disambig for {0};{1}
+                # ".format(self.gident, ident))
                 disambig = disambig or 0
         return disambig
 

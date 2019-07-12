@@ -54,16 +54,21 @@ class GCCMemoryMapParserSM(object):
         self.memory_map = GCCMemoryMap(self.ctx)
 
     def __repr__(self):
-        return "<GCCMemoryMapParserSM \n" + \
-               "   STATE           = {0}\n".format(self.state) + \
-               "   IDEP_STATE      = {0}\n".format(self.IDEP_STATE) + \
-               "    idep_archive         = {0}\n".format(self.idep_archive) + \
-               "   COMSYM_STATE    = {0}\n".format(self.COMSYM_STATE) + \
-               "    comsym_name          = {0}\n".format(self.comsym_name) + \
-               "   LINKERMAP_STATE = {0}\n".format(self.LINKERMAP_STATE) + \
-               "    linkermap_section    = {0}\n".format(self.linkermap_section) + \
-               "    linkermap_symbol     = {0}\n".format(self.linkermap_symbol) + \
-               "    linkermap_lastsymbol = {0}\n>".format(self.linkermap_lastsymbol)
+        return \
+            "<GCCMemoryMapParserSM \n" + \
+            "  {0:>30} = {1}\n".format('STATE', self.state) + \
+            "  {0:>30} = {1}\n".format('IDEP_STATE', self.IDEP_STATE) + \
+            "  {0:>30} = {1}\n".format('idep_archive', self.idep_archive) + \
+            "  {0:>30} = {1}\n".format('COMSYM_STATE', self.COMSYM_STATE) + \
+            "    {0:>28} = {1}\n".format('comsym_name', self.comsym_name) + \
+            "  {0:>30} = {1}\n" \
+            "".format('LINKERMAP_STATE', self.LINKERMAP_STATE) + \
+            "    {0:>28} = {1}\n" \
+            "".format('linkermap_section', self.linkermap_section) + \
+            "    {0:>28} = {1}\n" \
+            "".format('linkermap_symbol', self.linkermap_symbol) + \
+            "    {0:>28} = {1}\n" \
+            "".format('linkermap_lastsymbol', self.linkermap_lastsymbol)
 
 
 # Regular Expressions
@@ -288,11 +293,11 @@ def linkermap_get_newnode(name, sm, allow_disambig=True,
     newnode = sm.memory_map.get_node(name, create=True)
     if at_fill is True:
         if newnode.is_leaf_property_set or newnode._address is not None:
-            # The node isn't a new one. The present data within it needs to be
-            # handled first.
+            # The node isn't a new one. The present data within it needs to
+            # be handled first.
 
-            # Push the current node into it's own leaf node. This is enough for most
-            # cases.
+            # Push the current node into it's own leaf node. This is enough
+            # for most cases.
             try:
                 newnode.push_to_leaf()
             except TypeError:
@@ -302,13 +307,15 @@ def linkermap_get_newnode(name, sm, allow_disambig=True,
                 print("Runtime Error getting new node : {0}".format(name))
                 exit(0)
 
-            # Now generate the new node as a child of the original target. In some cases
-            # this needs the node disambiguation element included.
+            # Now generate the new node as a child of the original target.
+            # In some cases this needs the node disambiguation element
+            # included.
             newnodename = objfile.replace('.', '_')
             newnodepath = "{0}.{1}".format(name, newnodename)
 
             # Check if disambiguation is already initialized or is recommended
-            disambig = sm.memory_map.get_node_disambig(newnodepath, prospective=True)
+            disambig = sm.memory_map.get_node_disambig(newnodepath,
+                                                       prospective=True)
 
             # Accordingly modify name as needed
             if disambig is not None:
@@ -316,7 +323,8 @@ def linkermap_get_newnode(name, sm, allow_disambig=True,
 
             # Get the new child node for what was originally requested
             newnode = linkermap_get_newnode(
-                newnodepath, sm, allow_disambig=False, objfile=objfile, at_fill=True
+                newnodepath, sm, allow_disambig=False,
+                objfile=objfile, at_fill=True
             )
     return newnode
 
