@@ -547,7 +547,7 @@ def cleanup_and_pack_map(sm):
 def process_map_file(fname, profile=None):
     if profile is None:
         profile = get_profile('default')
-    elif profile is 'auto':
+    elif profile == 'auto':
         profile = guess_profile(fname)
     sm = GCCMemoryMapParserSM(ctx=profile)
     with open(fname) as f:
