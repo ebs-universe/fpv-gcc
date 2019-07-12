@@ -1,9 +1,35 @@
-dist: xenial
+
 language: python
-python: 3.7.2
+dist: xenial
+sudo: false
+matrix:
+  include:
+    - python: 2.7.16
+      env: TOX_ENV=py27
+    - python: 3.5.7
+      env: TOX_ENV=py35
+    - python: 3.6.8
+      env: TOX_ENV=py36
+    - python: 3.7.3
+      env: TOX_ENV=py36
+    - python: pypi2.7
+      env: TOX_ENV=pypy
+    - python: pypi3.6
+      env: TOX_ENV=pypy3
+    - python: 3.5
+      env: TOX_ENV=cover
+    - python: 3.5
+      env: TOX_ENV=style
+    - python: 3.5
+      env: TOX_ENV=docs
+
 install:
-  - pip install -e .[dev]
+  - pip install -U pip wheel
+  - pip install tox
+cache:
+  directories:
+    - $HOME/.cache/pip
+before_script:
+  - uname -a
 script:
-  - pytest --cov=fpvgcc
-after_success:
-  - coveralls
+  - tox -v -e $TOX_ENV
