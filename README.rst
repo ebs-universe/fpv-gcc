@@ -96,7 +96,7 @@ API/developer notes can be found at
 `ReadTheDocs <http://fpvgcc.readthedocs.org/en/latest/index.html>`_.
 
 The latest version of the sources can be found at
-`GitHub <https://github.com/chintal/fpv-gcc>`_. Please use GitHub's features
+`GitHub <https://github.com/ebs-universe/fpv-gcc>`_. Please use GitHub's features
 to report bugs, request features, or submit pull/merge requests.
 
 The principle author for ``fpvgcc`` is Chintalagiri Shashank. The author can
