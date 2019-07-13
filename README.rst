@@ -12,8 +12,13 @@
 .. image:: https://img.shields.io/coveralls/github/chintal/fpv-gcc.svg?logo=coveralls
     :target: https://coveralls.io/github/chintal/fpv-gcc
 
+.. image:: https://img.shields.io/requires/github/chintal/fpv-gcc.svg
+    :target: https://coveralls.io/github/chintal/fpv-gcc
+
 .. image:: https://img.shields.io/pypi/l/fpvgcc.svg
     :target: https://www.gnu.org/licenses/gpl-3.0.en.html
+
+
 
 .. inclusion-marker-do-not-remove
 
