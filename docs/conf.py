@@ -14,7 +14,7 @@ import os
 from pkg_resources import get_distribution
 
 _github_repo = 'fpv-gcc'
-_github_user = 'chintal'
+_github_user = 'ebs-universe'
 
 _package_name = u'fpvgcc'
 _package_author = u'Chintalagiri Shashank'
