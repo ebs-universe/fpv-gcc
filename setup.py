@@ -33,9 +33,6 @@ core_dependencies = [
     'prettytable'
 ]
 
-# wui_requires = ['bokeh']
-wui_requires = []
-
 install_requires = core_dependencies + ['wheel']
 
 setup_requires = ['setuptools_scm']
@@ -89,7 +86,6 @@ setup(
     install_requires=install_requires,
     setup_requires=setup_requires,
     extras_require={
-        'wui': wui_requires,
         'docs': doc_requires,
         'tests': test_requires,
         'build': build_requires,
