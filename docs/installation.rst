@@ -39,7 +39,7 @@ in your python environment by whatever means you usually use.
 
 .. code-block:: console
 
-    $ wget https://github.com/ebs-universe/fpv-gcc/archive/v0.9.6.tar.gz
+    $ wget https://github.com/ebs-universe/fpv-gcc/archive/v0.9.7.tar.gz
     $ unzip fpv-gcc-0.8.2.zip
     ...
     $ cd fpv-gcc-0.8.2
