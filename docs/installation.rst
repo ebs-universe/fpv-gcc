@@ -26,7 +26,7 @@ Installation from Sources
 -------------------------
 
 The sources can be downloaded from the project's
-`github releases <https://github.com/chintal/fpv-gcc/releases>`_. While this
+`github releases <https://github.com/ebs-universe/fpv-gcc/releases>`_. While this
 is the least convenient method of installation, it does have the advantage of
 making the least assumptions about your environment.
 
@@ -39,7 +39,7 @@ in your python environment by whatever means you usually use.
 
 .. code-block:: console
 
-    $ wget https://github.com/chintal/fpv-gcc/archive/v0.8.2.zip
+    $ wget https://github.com/ebs-universe/fpv-gcc/archive/v0.9.6.tar.gz
     $ unzip fpv-gcc-0.8.2.zip
     ...
     $ cd fpv-gcc-0.8.2
