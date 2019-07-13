@@ -13,7 +13,7 @@
     :target: https://coveralls.io/github/ebs-universe/fpv-gcc
 
 .. image:: https://img.shields.io/requires/ebs-universe/chintal/fpv-gcc.svg
-    :target: https://coveralls.io/github/ebs-universe/fpv-gcc
+    :target: https://requires.io/github/ebs-universe/fpv-gcc
 
 .. image:: https://img.shields.io/pypi/l/fpvgcc.svg
     :target: https://www.gnu.org/licenses/gpl-3.0.en.html
