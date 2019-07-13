@@ -94,6 +94,11 @@ The latest version of the sources can be found at
 `GitHub <https://github.com/chintal/fpv-gcc>`_. Please use GitHub's features
 to report bugs, request features, or submit pull/merge requests.
 
+The principle author for ``fpvgcc`` is Chintalagiri Shashank. The author can
+be contacted if necessary via the information on the
+`author's Github Profile <https://github.com/chintal>`_ . See the AUTHORS file
+for a full list of collaborators and/or contributing authors, if any.
+
 ``fpvgcc`` is distributed under the terms of the
 `GPLv3 license <https://www.gnu.org/licenses/gpl-3.0-standalone.html>`_ .
 A copy of the text of the license is included along with the sources.
