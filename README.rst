@@ -101,7 +101,7 @@ to report bugs, request features, or submit pull/merge requests.
 
 The principle author for ``fpvgcc`` is Chintalagiri Shashank. The author can
 be contacted if necessary via the information on the
-`author's Github Profile <https://github.com/chintal>`_ . See the AUTHORS file
+`author's github profile <https://github.com/chintal>`_ . See the AUTHORS file
 for a full list of collaborators and/or contributing authors, if any.
 
 ``fpvgcc`` is distributed under the terms of the
