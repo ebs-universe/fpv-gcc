@@ -12,7 +12,7 @@
 .. image:: https://img.shields.io/coveralls/github/ebs-universe/fpv-gcc.svg?logo=coveralls
     :target: https://coveralls.io/github/ebs-universe/fpv-gcc
 
-.. image:: https://img.shields.io/requires/ebs-universe/ebs-universe/fpv-gcc.svg
+.. image:: https://img.shields.io/requires/github/ebs-universe/fpv-gcc.svg
     :target: https://requires.io/github/ebs-universe/fpv-gcc/requirements
 
 .. image:: https://img.shields.io/pypi/l/fpvgcc.svg
