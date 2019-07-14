@@ -4,8 +4,8 @@
    contain the root `toctree` directive.
 
 
-fpvgcc Documentation
-====================
+fpvgcc
+======
 
 .. include:: ../README.rst
     :start-after: inclusion-marker-do-not-remove
