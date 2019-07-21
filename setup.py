@@ -56,9 +56,9 @@ setup(
     long_description_content_type='text/x-rst',
     keywords="utilities",
     url="https://github.com/ebs-universe/fpv-gcc",
-    bugtrack_url='https://github.com/ebs-universe/fpv-gcc/issues',
-    docs_url='https://fpvgcc.readthedocs.io/en/latest/index.html',
     project_urls={
+        'Documentation': 'https://fpvgcc.readthedocs.io/en/latest/index.html',
+        'Bug Tracker': 'https://github.com/ebs-universe/fpv-gcc/issues',
         'Source Repository': 'https://github.com/ebs-universe/fpv-gcc/',
     },
     packages=find_packages('src'),
