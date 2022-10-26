@@ -19,6 +19,7 @@
 
 
 import logging
+from functools import cached_property, cache
 from os.path import commonprefix
 
 
@@ -36,7 +37,7 @@ class NTreeNode(object):
         self.node_t = node_t
         self.children = []
 
-    @property
+    @cached_property
     def tree(self):
         if isinstance(self.parent, NTree):
             return self.parent
@@ -167,11 +168,15 @@ class NTreeNode(object):
                     return res
         return ValueError
 
+    @cache
     def all_nodes(self):
-        yield self
-        for child in self.children:
-            for node in child.all_nodes():
-                yield node
+        def iter_all():
+            yield self
+            for child in self.children:
+                for node in child.all_nodes():
+                    yield node
+
+        return list(iter_all())
 
     @property
     def get_top_level_ancestor(self):

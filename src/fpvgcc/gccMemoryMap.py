@@ -19,6 +19,7 @@
 
 
 import logging
+from functools import cached_property
 
 from fpvgcc.datastructures.ntreeSize import SizeNTree, SizeNTreeNode
 
@@ -78,7 +79,7 @@ class GCCMemoryMapNode(SizeNTreeNode):
         self._fillsize = None
         self.fillsize = fillsize
 
-    @property
+    @cached_property
     def ctx(self):
         return self.parent.ctx
 
@@ -204,7 +205,7 @@ class GCCMemoryMapNode(SizeNTreeNode):
     def leafsize(self, value):
         raise AttributeError
 
-    @property
+    @cached_property
     def region(self):
         ctx = self.ctx
         if not isinstance(self.parent, GCCMemoryMap) and \
