@@ -19,6 +19,7 @@
 
 
 import logging
+from functools import cached_property
 
 from fpvgcc.datastructures.ntreeSize import SizeNTree, SizeNTreeNode
 
@@ -78,7 +79,7 @@ class GCCMemoryMapNode(SizeNTreeNode):
         self._fillsize = None
         self.fillsize = fillsize
 
-    @property
+    @cached_property
     def ctx(self):
         return self.parent.ctx
 
@@ -204,14 +205,15 @@ class GCCMemoryMapNode(SizeNTreeNode):
     def leafsize(self, value):
         raise AttributeError
 
-    @property
+    @cached_property
     def region(self):
+        ctx = self.ctx
         if not isinstance(self.parent, GCCMemoryMap) and \
                 self.parent.region == 'DISCARDED':
             return 'DISCARDED'
         # Suppressed root identifiers for MSP430 GCC. A better mechanism to
         # provide user access to manipulate this set is needed.
-        if self.ctx and self.name in self.ctx.suppressed_names:
+        if ctx and self.name in ctx.suppressed_names:
             return 'DISCARDED'
         if self._address is None:
             return 'UNDEF'
@@ -219,7 +221,7 @@ class GCCMemoryMapNode(SizeNTreeNode):
             return "DISCARDED"
         for region in self.tree.memory_regions:
             if self._address in region:
-                if region.name in self.ctx.suppressed_regions:
+                if region.name in ctx.suppressed_regions:
                     return 'DISCARDED'
                 return region.name
         raise ValueError(self._address)
@@ -257,14 +259,15 @@ class GCCMemoryMap(SizeNTree):
             self._vector_regions = []
             ur.append('VEC')
         for node in self.root.all_nodes():
-            if node.region not in ur:
+            region = node.region
+            if region not in ur:
                 if self.collapse_vectors:
-                    if 'VEC' not in node.region:
-                        ur.append(node.region)
-                    elif node.region not in self._vector_regions:
-                        self._vector_regions.append(node.region)
+                    if 'VEC' not in region:
+                        ur.append(region)
+                    elif region not in self._vector_regions:
+                        self._vector_regions.append(region)
                 else:
-                    ur.append(node.region)
+                    ur.append(region)
         ur.remove('UNDEF')
         ur.remove('DISCARDED')
         return ur
@@ -273,11 +276,12 @@ class GCCMemoryMap(SizeNTree):
     def used_objfiles(self):
         of = []
         for node in self.root.all_nodes():
+            region = node.region
             if node.objfile is None and node.leafsize \
-                    and node.region not in ['DISCARDED', 'UNDEF']:
+                    and region not in ['DISCARDED', 'UNDEF']:
                 logging.warning(
                     "Object unaccounted for : {0:<40} {1:<15} {2:>5}"
-                    "".format(node.gident, node.region, str(node.leafsize))
+                    "".format(node.gident, region, str(node.leafsize))
                 )
                 continue
             if node.objfile not in of:
@@ -297,11 +301,12 @@ class GCCMemoryMap(SizeNTree):
     def used_arfiles(self):
         af = []
         for node in self.root.all_nodes():
+            region = node.region
             if node.arfile is None and node.leafsize \
-                    and node.region not in ['DISCARDED', 'UNDEF']:
+                    and region not in ['DISCARDED', 'UNDEF']:
                 logging.warning(
                     "Object unaccounted for : {0:<40} {1:<15} {2:>5}"
-                    "".format(node.gident, node.region, str(node.leafsize))
+                    "".format(node.gident, region, str(node.leafsize))
                 )
                 continue
             if node.arfile not in af:
@@ -313,13 +318,14 @@ class GCCMemoryMap(SizeNTree):
         af = []
         of = []
         for node in self.root.all_nodes():
+            region = node.region
             if node.arfile is None and node.leafsize \
-                    and node.region not in ['DISCARDED', 'UNDEF']:
+                    and region not in ['DISCARDED', 'UNDEF']:
                 if node.objfile is None and node.leafsize \
-                        and node.region not in ['DISCARDED', 'UNDEF']:
+                        and region not in ['DISCARDED', 'UNDEF']:
                     logging.warning(
                         "Object unaccounted for : {0:<40} {1:<15} {2:>5}"
-                        "".format(node.gident, node.region, str(node.leafsize))
+                        "".format(node.gident, region, str(node.leafsize))
                     )
                     continue
                 else:
