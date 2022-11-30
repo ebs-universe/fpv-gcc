@@ -19,7 +19,7 @@
 
 
 import logging
-from functools import cached_property, cache
+from functools import cached_property, lru_cache
 from os.path import commonprefix
 
 
@@ -168,7 +168,7 @@ class NTreeNode(object):
                     return res
         return ValueError
 
-    @cache
+    @lru_cache(maxsize=None)
     def all_nodes(self):
         def iter_all():
             yield self
