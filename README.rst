@@ -26,51 +26,54 @@
 
        \vspace*{\fill}
 
+Deprecation Notice
+------------------
+
+This (`v1.1.2`) will be the final release of the 1.x series of `fpvgcc`. 
+The tool has evolved to the extent possible within the naive framework 
+it was originally built on, and a number of open issues cannot be resolved
+without refactoring big chunks of the code. `fpvgcc v1.1.2` is essentially 
+functional and will remain available in its present form.
+
+Though I have been unable to find time to maintain and build up the tool 
+after the original releases, I hope it has been useful to the few people 
+who've used it. 
+
+A number of other tools are now available which do a similar job. While I 
+have minor qualms about each of those tools, such qualms are mostly 
+subjective and aesthetic objections. I am forced to admit that `fpvgcc` 
+would never have been written if some of those tools had existed at the 
+time of its writing.  
+
+I am considering starting work on a 2.x series of `fpvgcc`, which will 
+likely be a page one rewrite. The following are the main planned changes:
+    - Reduce the number of assumptions made when parsing map files. For example, 
+    allow multiple object files with the same name. 
+    - Use polars or something suitably performant to store the parsed map 
+    information.
+    - Add a minimal fastapi interface to be able to provide a GUI using a 
+    webview or similar.
+    - Remove python 2 support. Minimum python version required will probably 
+    be py37 or py38.
+
+I expect it will be some time before 2.x will be usable. If and when 
+development starts, it will be available in the v2 branch of this 
+repository. When v2.x reaches feature parity with v1.1.2, it will be 
+merged in to `main` and python packages for fpvgcc 2.x will be published 
+to pypi.
+
+Please feel free to write to me at `shashank at chintal dot in` if any 
+of the following apply to you:
+    - you have been using `fpvgcc` or are maintaining a public or private 
+    fork and have any concerns regarding the shift
+    - you wish to take over the 1.x codebase and keep it functional and 
+    available in the future  
+    - you have any suggestions for features to include in 2.x 
+    - you wish to contribute to the development of 2.x  
+
+
 Introduction
 ------------
-.. note::
-    This (`v1.1.2``) will be the final release of the 1.x series of `fpvgcc`. 
-    The tool has evolved to the extent possible within the naive framework 
-    it was originally built on, and a number of open issues cannot be resolved
-    without refactoring big chunks of the code. `fpvgcc v1.1.2` is essentially 
-    functional and will remain available in its present form.
-    
-    Though I have been unable to find time to maintain and build up the tool 
-    after the original releases, I hope it has been useful to the few people 
-    who've used it. 
-
-    A number of other tools are now available which do a similar job. While I 
-    have minor qualms about each of those tools, such qualms are mostly 
-    subjective and aesthetic objections. I am forced to admit that `fpvgcc` 
-    would never have been written if some of those tools had existed at the 
-    time of its writing.  
-
-    I am considering starting work on a 2.x series of `fpvgcc`, which will 
-    likely be a page one rewrite. The following are the main planned changes:
-      - Reduce the number of assumptions made when parsing map files. For example, 
-        allow multiple object files with the same name. 
-      - Use polars or something suitably performant to store the parsed map 
-        information.
-      - Add a minimal fastapi interface to be able to provide a GUI using a 
-        webview or similar.
-      - Remove python 2 support. Minimum python version required will probably 
-        be py37 or py38.
-    
-    I expect it will be some time before 2.x will be usable. If and when 
-    development starts, it will be available in the v2 branch of this 
-    repository. When v2.x reaches feature parity with v1.1.2, it will be 
-    merged in to `main` and python packages for fpvgcc 2.x will be published 
-    to pypi.
-
-    Please feel free to write to me at `shashank at chintal dot in` if any 
-    of the following apply to you:
-      - you have been using `fpvgcc` or are maintaining a public or private 
-        fork and have any concerns regarding the shift
-      - you wish to take over the 1.x codebase and keep it functional and 
-        available in the future  
-      - you have any suggestions for features to include in 2.x 
-      - you wish to contribute to the development of 2.x  
-
 
 ``fpvgcc`` is a python script/package to help analyse code footprint on
 embedded microcontrollers using GCC generated Map files.
