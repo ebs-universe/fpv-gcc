@@ -308,6 +308,11 @@ def linkermap_get_newnode(name, sm, allow_disambig=True,
                 print("Runtime Error getting new node : {0}".format(name))
                 exit(0)
 
+            if not objfile:
+                print("Possibly duplicate node with a conflicting name and no objfile for disambiguation:", name)
+                print("Footprint measurement is probably inaccurate!")
+                return newnode
+
             # Now generate the new node as a child of the original target.
             # In some cases this needs the node disambiguation element
             # included.
