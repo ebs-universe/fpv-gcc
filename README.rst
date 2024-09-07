@@ -65,7 +65,7 @@ to pypi.
 Please feel free to write to me at `shashank at chintal dot in` if any 
 of the following apply to you:
     - you have been using `fpvgcc` or are maintaining a public or private 
-      fork and have any concerns regarding the shift
+      fork and have any concerns regarding the deprecation or plans for 2.x
     - you wish to take over the 1.x codebase and keep it functional and 
       available in the future  
     - you have any suggestions for features to include in 2.x 
