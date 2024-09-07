@@ -48,13 +48,13 @@ time of its writing.
 I am considering starting work on a 2.x series of `fpvgcc`, which will 
 likely be a page one rewrite. The following are the main planned changes:
     - Reduce the number of assumptions made when parsing map files. For example, 
-    allow multiple object files with the same name. 
+      allow multiple object files with the same name. 
     - Use polars or something suitably performant to store the parsed map 
-    information.
+      information.
     - Add a minimal fastapi interface to be able to provide a GUI using a 
-    webview or similar.
+      webview or similar.
     - Remove python 2 support. Minimum python version required will probably 
-    be py37 or py38.
+      be py37 or py38.
 
 I expect it will be some time before 2.x will be usable. If and when 
 development starts, it will be available in the v2 branch of this 
@@ -65,9 +65,9 @@ to pypi.
 Please feel free to write to me at `shashank at chintal dot in` if any 
 of the following apply to you:
     - you have been using `fpvgcc` or are maintaining a public or private 
-    fork and have any concerns regarding the shift
+      fork and have any concerns regarding the shift
     - you wish to take over the 1.x codebase and keep it functional and 
-    available in the future  
+      available in the future  
     - you have any suggestions for features to include in 2.x 
     - you wish to contribute to the development of 2.x  
 
