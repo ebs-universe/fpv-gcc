@@ -29,7 +29,7 @@
 Deprecation Notice
 ------------------
 
-This (``v1.1.3``) will be the final release of the 1.x series of ``fpvgcc``. 
+This (``v1.1.2``) will be the final release of the 1.x series of ``fpvgcc``. 
 The tool has evolved to the extent possible within the naive framework 
 it was originally built on, and a number of open issues cannot be resolved
 without refactoring big chunks of the code. ``fpvgcc v1.1.2`` is essentially 
