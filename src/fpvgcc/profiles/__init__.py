@@ -1,12 +1,14 @@
 
 
 from .context import ContextBase
+from .arm_gnu_toolchain import ProfileArmGnuToolchain
 from .gcc_msp430 import ProfileGccMsp430
 
 
 def _load_profiles():
     return {
         'default': ContextBase,
+        ProfileArmGnuToolchain.id: ProfileArmGnuToolchain,
         ProfileGccMsp430.id: ProfileGccMsp430,
     }
 

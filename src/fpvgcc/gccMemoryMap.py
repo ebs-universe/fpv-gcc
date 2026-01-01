@@ -217,8 +217,6 @@ class GCCMemoryMapNode(SizeNTreeNode):
             return 'DISCARDED'
         if self._address is None:
             return 'UNDEF'
-        if self._address == 0:
-            return "DISCARDED"
         for region in self.tree.memory_regions:
             if self._address in region:
                 if region.name in ctx.suppressed_regions:
